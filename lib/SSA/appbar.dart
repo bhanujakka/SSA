@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dashboard_colors.dart';
+import 'sidebar.dart';
 
 class DashboardTopBar extends StatelessWidget {
   const DashboardTopBar({super.key, required this.isMobile});
@@ -26,50 +27,14 @@ class DashboardTopBar extends StatelessWidget {
                 );
               },
             ),
-          Expanded(
-            child: Container(
-              height: isMobile ? 46 : 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: DashboardColors.border, width: 2),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: isMobile ? 10 : 16),
-              child: Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Search...',
-                      style: TextStyle(
-                        color: Color(0xFF6B7280),
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE9F2F2),
-                      borderRadius: BorderRadius.circular(7),
-                    ),
-                    child: Visibility(
-                      visible: !isMobile,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      maintainSize: false,
-                      child: const Text(
-                        'Ctrl+K',
-                        style: TextStyle(
-                          color: Color(0xFF36526E),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+          const Expanded(
+            child: _SearchBox(
+              extraTargets: [
+                _SearchTarget(
+                  label: 'Schedule Lecture',
+                  route: '/ssa/schedule-lecture',
+                ),
+              ],
             ),
           ),
           if (isMobile) ...[
@@ -220,6 +185,93 @@ class DashboardTopBar extends StatelessWidget {
 
   void _logout(BuildContext context) {
     Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+  }
+}
+
+class _SearchTarget {
+  const _SearchTarget({required this.label, required this.route});
+
+  final String label;
+  final String route;
+}
+
+class _SearchBox extends StatelessWidget {
+  const _SearchBox({this.extraTargets = const []});
+
+  final List<_SearchTarget> extraTargets;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: DashboardColors.border, width: 2),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: TextField(
+        textInputAction: TextInputAction.search,
+        onSubmitted: (value) => _handleSearch(context, value),
+        decoration: const InputDecoration(
+          icon: Icon(
+            Icons.search_rounded,
+            color: Color(0xFF6B7280),
+            size: 20,
+          ),
+          hintText: 'Search...',
+          hintStyle: TextStyle(
+            color: Color(0xFF6B7280),
+            fontSize: 13.5,
+            fontWeight: FontWeight.w500,
+          ),
+          border: InputBorder.none,
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(vertical: 14),
+        ),
+        style: const TextStyle(
+          color: DashboardColors.text,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  void _handleSearch(BuildContext context, String value) {
+    final query = _normalize(value);
+    if (query.isEmpty) return;
+
+    for (final item in DashboardSidebar.menuItems) {
+      final label = item.$1;
+      if (_matches(query, label)) {
+        Navigator.of(context).pushNamed(item.$3);
+        return;
+      }
+    }
+
+    for (final target in extraTargets) {
+      if (_matches(query, target.label)) {
+        Navigator.of(context).pushNamed(target.route);
+        return;
+      }
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('No page found for "$value"'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  bool _matches(String query, String label) {
+    final normalizedLabel = _normalize(label);
+    return normalizedLabel.contains(query) || query.contains(normalizedLabel);
+  }
+
+  String _normalize(String value) {
+    return value.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
   }
 }
 

@@ -25,8 +25,8 @@ class DashboardSidebarHost extends StatelessWidget {
       valueListenable: DashboardSidebarController.isCollapsed,
       builder: (context, isCollapsed, _) {
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 520),
-          curve: Curves.bounceOut,
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeOutCubic,
           width: isCollapsed
               ? DashboardSidebarController.collapsedWidth
               : DashboardSidebarController.expandedWidth,
@@ -84,6 +84,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   static const double _iconRailWidth = 64;
   static double _lastOffset = 0;
   late final ScrollController _scrollController;
+  bool _isCollapseButtonPressed = false;
 
   @override
   void initState() {
@@ -98,6 +99,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         : _lastOffset;
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _setCollapseButtonPressed(bool value) {
+    if (!mounted) return;
+    setState(() => _isCollapseButtonPressed = value);
   }
 
   @override
@@ -231,48 +237,58 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                       color: Colors.transparent,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(16),
+                        onTapDown: (_) => _setCollapseButtonPressed(true),
+                        onTapCancel: () => _setCollapseButtonPressed(false),
+                        onTapUp: (_) => _setCollapseButtonPressed(false),
                         onTap: DashboardSidebarController.toggle,
-                        child: Container(
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF2D65D7),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Center(
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                final canShowLabel = showExpandedContent &&
-                                    constraints.maxWidth >= 88;
+                        child: AnimatedScale(
+                          scale: _isCollapseButtonPressed ? 0.94 : 1,
+                          duration: const Duration(milliseconds: 180),
+                          curve: _isCollapseButtonPressed
+                              ? Curves.easeOut
+                              : Curves.elasticOut,
+                          child: Container(
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2D65D7),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Center(
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final canShowLabel = showExpandedContent &&
+                                      constraints.maxWidth >= 88;
 
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                      width: _iconRailWidth,
-                                      child: Icon(
-                                        isCollapsed
-                                            ? Icons.chevron_right_rounded
-                                            : Icons.chevron_left_rounded,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    if (canShowLabel) ...[
-                                      const SizedBox(width: 4),
-                                      const Flexible(
-                                        child: Text(
-                                          'Collapse',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 13.333,
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                  return Row(
+                                    children: [
+                                      SizedBox(
+                                        width: _iconRailWidth,
+                                        child: Icon(
+                                          isCollapsed
+                                              ? Icons.chevron_right_rounded
+                                              : Icons.chevron_left_rounded,
+                                          color: Colors.white,
                                         ),
                                       ),
+                                      if (canShowLabel) ...[
+                                        const SizedBox(width: 4),
+                                        const Flexible(
+                                          child: Text(
+                                            'Collapse',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13.333,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ],
-                                  ],
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
