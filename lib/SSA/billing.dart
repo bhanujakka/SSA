@@ -1,4 +1,4 @@
-﻿
+
 import 'package:flutter/material.dart';
 
 import 'appbar.dart';
@@ -51,7 +51,7 @@ class _BillingBody extends StatelessWidget {
       'BILL-VC-\n2024-002',
       'Priya\nGupta',
       'Vocational Training\nCorp',
-      '?38,000',
+      '38,000',
       '12/4/2026',
       _BillStatus.pending,
     ),
@@ -59,7 +59,7 @@ class _BillingBody extends StatelessWidget {
       'BILL-VC-\n2024-003',
       'Rahul\nSharma',
       'Skill India Partners',
-      '?52,000',
+      '52,000',
       '14/4/2026',
       _BillStatus.approved,
     ),
@@ -67,7 +67,7 @@ class _BillingBody extends StatelessWidget {
       'BILL-VC-\n2024-004',
       'Sneha Iyer',
       'Tech Skill Pvt Ltd',
-      '?41,000',
+      '41,000',
       '13/4/2026',
       _BillStatus.approved,
     ),
@@ -75,7 +75,7 @@ class _BillingBody extends StatelessWidget {
       'BILL-VC-\n2024-005',
       'Karan\nMehta',
       'Vocational Training\nCorp',
-      '?47,000',
+      '47,000',
       '11/4/2026',
       _BillStatus.pending,
     ),
@@ -181,21 +181,21 @@ Generated On: ${DateTime.now()}
                           children: const [
                             _MetricCard(
                               title: 'Total Amount',
-                              value: '?223K',
+                              value: '223K',
                               valueColor: Color(0xFF1E40AF),
                               icon: Icons.currency_rupee_rounded,
                               iconColor: Color(0xFF1D4ED8),
                             ),
                             _MetricCard(
                               title: 'Paid',
-                              value: '?45K',
+                              value: '45K',
                               valueColor: Color(0xFF059669),
                               icon: Icons.check_circle_outline_rounded,
                               iconColor: Color(0xFF00A76F),
                             ),
                             _MetricCard(
                               title: 'Pending',
-                              value: '?85K',
+                              value: '85K',
                               valueColor: Color(0xFFC4A555),
                               icon: Icons.access_time_rounded,
                               iconColor: Color(0xFFC8A94E),

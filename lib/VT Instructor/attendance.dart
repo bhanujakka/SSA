@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'appbar.dart';
 import 'dashboard_colors.dart';
@@ -13,10 +13,16 @@ class AttendancePage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobileShell = constraints.maxWidth < 980;
+
         return Scaffold(
           backgroundColor: DashboardColors.surface,
           drawer: isMobileShell
-              ? const Drawer(child: DashboardSidebar(activeItem: 'Attendance', showCollapseButton: false))
+              ? const Drawer(
+                  child: DashboardSidebar(
+                    activeItem: 'Attendance',
+                    showCollapseButton: false,
+                  ),
+                )
               : null,
           body: SafeArea(
             child: Row(
@@ -33,6 +39,10 @@ class AttendancePage extends StatelessWidget {
   }
 }
 
+class AttendencePage extends AttendancePage {
+  const AttendencePage({super.key});
+}
+
 enum _AttendanceRole { students, vts, vcs }
 
 class _AttendanceBody extends StatefulWidget {
@@ -45,27 +55,23 @@ class _AttendanceBody extends StatefulWidget {
 class _AttendanceBodyState extends State<_AttendanceBody> {
   _AttendanceRole _selectedRole = _AttendanceRole.students;
 
-  static const _roleData = {
+  final Map<_AttendanceRole, List<_AttendancePerson>> _roleData = {
     _AttendanceRole.students: [
-      ('Rajesh Kumar', 'STU2024001', 'RK', true),
-      ('Priya Sharma', 'STU2024002', 'PS', true),
-      ('Amit Singh', 'STU2024003', 'AS', false),
-      ('Sneha Patel', 'STU2024004', 'SP', true),
-      ('Rahul Verma', 'STU2024005', 'RV', true),
+      _AttendancePerson('Rajesh Kumar Sharma', 'STU2024001', 'RK', true),
+      _AttendancePerson('Priya Devi Patel', 'STU2024002', 'PD', true),
+      _AttendancePerson('Amit Singh', 'STU2024003', 'AS', false),
+      _AttendancePerson('Sneha Patel', 'STU2024004', 'SP', true),
+      _AttendancePerson('Rahul Verma', 'STU2024005', 'RV', true),
     ],
     _AttendanceRole.vts: [
-      ('Anita Verma', 'VT2024001', 'AV', true),
-      ('Rohit Das', 'VT2024002', 'RD', true),
-      ('Meena Joshi', 'VT2024003', 'MJ', true),
-      ('Sunil Yadav', 'VT2024004', 'SY', false),
-      ('Nisha Khan', 'VT2024005', 'NK', true),
+      _AttendancePerson('John Doe', 'VT2024001', 'JD', true),
+      _AttendancePerson('Anita Verma', 'VT2024002', 'AV', true),
+      _AttendancePerson('Rohit Das', 'VT2024003', 'RD', false),
     ],
     _AttendanceRole.vcs: [
-      ('Pooja Nair', 'VC2024001', 'PN', true),
-      ('Karan Gupta', 'VC2024002', 'KG', false),
-      ('Dev Singh', 'VC2024003', 'DS', true),
-      ('Ritu Sinha', 'VC2024004', 'RS', true),
-      ('Aditya Rai', 'VC2024005', 'AR', true),
+      _AttendancePerson('Pooja Nair', 'VC2024001', 'PN', true),
+      _AttendancePerson('Karan Gupta', 'VC2024002', 'KG', false),
+      _AttendancePerson('Ritu Sinha', 'VC2024003', 'RS', true),
     ],
   };
 
@@ -80,17 +86,35 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
     }
   }
 
+  String get _todayLabel {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    final now = DateTime.now();
+    return '${now.day} ${months[now.month - 1]} ${now.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final current = _roleData[_selectedRole]!;
     final total = current.length;
-    final presentCount = current.where((s) => s.$4).length;
+    final presentCount = current.where((person) => person.present).length;
     final rate = total == 0 ? 0 : ((presentCount / total) * 100).round();
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final maxWidth = constraints.maxWidth;
-        final isMobile = maxWidth < 980;
+        final isMobile = constraints.maxWidth < 980;
 
         return Stack(
           children: [
@@ -104,7 +128,7 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                       isMobile ? 14 : 30,
                       22,
                       isMobile ? 14 : 30,
-                      20,
+                      104,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +137,7 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                           'Attendance Management',
                           style: TextStyle(
                             color: DashboardColors.text,
-                            fontSize: 41 / 2,
+                            fontSize: 21,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -122,7 +146,7 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                           'Mark and track daily attendance',
                           style: TextStyle(
                             color: DashboardColors.text,
-                            fontSize: 30 / 2,
+                            fontSize: 15,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -134,96 +158,146 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                             _RoleChip(
                               text: 'Students',
                               icon: Icons.school_outlined,
-                              active: _selectedRole == _AttendanceRole.students,
-                              onTap: () => setState(() => _selectedRole = _AttendanceRole.students),
+                              active:
+                                  _selectedRole == _AttendanceRole.students,
+                              onTap: () => setState(
+                                () => _selectedRole = _AttendanceRole.students,
+                              ),
                             ),
                             _RoleChip(
                               text: 'VTs',
                               icon: Icons.person_outline_rounded,
                               active: _selectedRole == _AttendanceRole.vts,
-                              onTap: () => setState(() => _selectedRole = _AttendanceRole.vts),
+                              onTap: () => setState(
+                                () => _selectedRole = _AttendanceRole.vts,
+                              ),
                             ),
                             _RoleChip(
                               text: 'VCs',
                               icon: Icons.person_search_outlined,
                               active: _selectedRole == _AttendanceRole.vcs,
-                              onTap: () => setState(() => _selectedRole = _AttendanceRole.vcs),
+                              onTap: () => setState(
+                                () => _selectedRole = _AttendanceRole.vcs,
+                              ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 22),
-                        if (isMobile)
-                          Column(
-                            children: [
-                              const _MetricCard(
-                                borderColor: Color(0x5BE8A9B3),
-                                iconColor: DashboardColors.red,
-                                icon: Icons.calendar_month_outlined,
-                                title: '5 May 2026',
-                                subtitle: "Today's Date",
-                              ),
-                              const SizedBox(height: 12),
-                              _MetricCard(
-                                borderColor: const Color(0x7D74D89A),
-                                iconColor: const Color(0xFF0CA140),
-                                icon: Icons.check_circle_outline_rounded,
-                                title: '$presentCount/$total',
-                                subtitle: 'Present Today',
-                              ),
-                              const SizedBox(height: 12),
-                              _AttendanceRateCard(rate: '$rate%'),
-                            ],
-                          )
-                        else
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                const SizedBox(
-                                  width: 330,
-                                  child: _MetricCard(
-                                    borderColor: Color(0x5BE8A9B3),
-                                    iconColor: DashboardColors.red,
-                                    icon: Icons.calendar_month_outlined,
-                                    title: '5 May 2026',
-                                    subtitle: "Today's Date",
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                SizedBox(
-                                  width: 330,
-                                  child: _MetricCard(
-                                    borderColor: const Color(0x7D74D89A),
-                                    iconColor: const Color(0xFF0CA140),
-                                    icon: Icons.check_circle_outline_rounded,
-                                    title: '$presentCount/$total',
-                                    subtitle: 'Present Today',
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                SizedBox(width: 330, child: _AttendanceRateCard(rate: '$rate%')),
-                              ],
-                            ),
-                          ),
+                        _MetricsRow(
+                          isMobile: isMobile,
+                          todayLabel: _todayLabel,
+                          presentCount: presentCount,
+                          total: total,
+                          rate: rate,
+                        ),
                         const SizedBox(height: 18),
                         _AttendanceListCard(
                           isMobile: isMobile,
                           roleLabel: _roleLabel,
                           rows: current,
+                          onToggle: (person) {
+                            setState(() => person.present = !person.present);
+                          },
+                          onSubmit: () => _submitAttendance(
+                            roleLabel: _roleLabel,
+                            presentCount: presentCount,
+                            total: total,
+                            rate: rate,
+                          ),
                         ),
-                        const SizedBox(height: 72),
                       ],
                     ),
                   ),
                 ),
               ],
             ),
-            const Positioned(
-              right: 24,
-              bottom: 36,
-              child: _FloatingPlus(),
+            Positioned(
+              right: isMobile ? 18 : 24,
+              bottom: 28,
+              child: const DashboardQuickActionsFab(),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _submitAttendance({
+    required String roleLabel,
+    required int presentCount,
+    required int total,
+    required int rate,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '$roleLabel attendance submitted: $presentCount/$total present ($rate%).',
+        ),
+      ),
+    );
+  }
+}
+
+class _MetricsRow extends StatelessWidget {
+  const _MetricsRow({
+    required this.isMobile,
+    required this.todayLabel,
+    required this.presentCount,
+    required this.total,
+    required this.rate,
+  });
+
+  final bool isMobile;
+  final String todayLabel;
+  final int presentCount;
+  final int total;
+  final int rate;
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = [
+      _MetricCard(
+        borderColor: const Color(0x5BE8A9B3),
+        iconColor: DashboardColors.red,
+        icon: Icons.calendar_month_outlined,
+        title: todayLabel,
+        subtitle: "Today's Date",
+      ),
+      _MetricCard(
+        borderColor: const Color(0x7D74D89A),
+        iconColor: const Color(0xFF0CA140),
+        icon: Icons.check_circle_outline_rounded,
+        title: '$presentCount/$total',
+        subtitle: 'Present Today',
+      ),
+      _AttendanceRateCard(rate: '$rate%'),
+    ];
+
+    if (isMobile) {
+      return Column(
+        children: [
+          for (final card in cards) ...[
+            card,
+            if (card != cards.last) const SizedBox(height: 12),
+          ],
+        ],
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = (constraints.maxWidth - 32) / 3;
+        return Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: cards
+              .map(
+                (card) => SizedBox(
+                  width: width.clamp(240, 360).toDouble(),
+                  child: card,
+                ),
+              )
+              .toList(),
         );
       },
     );
@@ -279,7 +353,7 @@ class _RoleChip extends StatelessWidget {
               text,
               style: TextStyle(
                 color: active ? Colors.white : DashboardColors.text,
-                fontSize: 32 / 2,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -323,9 +397,11 @@ class _MetricCard extends StatelessWidget {
           const Spacer(),
           Text(
             title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: DashboardColors.text,
-              fontSize: 25 / 1.2,
+              fontSize: 21,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -363,22 +439,19 @@ class _AttendanceRateCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF2552C2), Color(0xFF2D65D7)],
-                  ),
-                ),
+          Container(
+            width: 80,
+            height: 80,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF2552C2), Color(0xFF2D65D7)],
               ),
-              Text(
+            ),
+            child: Center(
+              child: Text(
                 rate,
                 style: const TextStyle(
                   color: Colors.white,
@@ -386,7 +459,7 @@ class _AttendanceRateCard extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-            ],
+            ),
           ),
           const SizedBox(height: 14),
           const Text(
@@ -408,11 +481,15 @@ class _AttendanceListCard extends StatelessWidget {
     required this.isMobile,
     required this.roleLabel,
     required this.rows,
+    required this.onToggle,
+    required this.onSubmit,
   });
 
   final bool isMobile;
   final String roleLabel;
-  final List<(String, String, String, bool)> rows;
+  final List<_AttendancePerson> rows;
+  final ValueChanged<_AttendancePerson> onToggle;
+  final VoidCallback onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -433,7 +510,7 @@ class _AttendanceListCard extends StatelessWidget {
                     'Mark Attendance - $roleLabel',
                     style: const TextStyle(
                       color: DashboardColors.text,
-                      fontSize: 37 / 2,
+                      fontSize: 18.5,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -443,17 +520,20 @@ class _AttendanceListCard extends StatelessWidget {
           ),
           const Divider(height: 1, color: Color(0x33E7B3BE)),
           Padding(
-            padding: EdgeInsets.fromLTRB(isMobile ? 14 : 26, 10, isMobile ? 14 : 26, 12),
+            padding: EdgeInsets.fromLTRB(
+              isMobile ? 14 : 26,
+              10,
+              isMobile ? 14 : 26,
+              12,
+            ),
             child: Column(
               children: rows
                   .map(
-                    (row) => Padding(
+                    (person) => Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: _AttendanceRow(
-                        name: row.$1,
-                        id: row.$2,
-                        initials: row.$3,
-                        present: row.$4,
+                        person: person,
+                        onToggle: () => onToggle(person),
                       ),
                     ),
                   )
@@ -467,91 +547,9 @@ class _AttendanceListCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: _HoverLift(
                 borderRadius: BorderRadius.circular(16),
-                onTap: () {
-                  final total = rows.length;
-                  final presentCount = rows.where((row) => row.$4).length;
-                  final rate = total == 0 ? 0 : ((presentCount / total) * 100).round();
-                  showGeneralDialog<void>(
-                    context: context,
-                    barrierLabel: 'Attendance submitted',
-                    barrierDismissible: true,
-                    barrierColor: Colors.transparent,
-                    transitionDuration: const Duration(milliseconds: 220),
-                    pageBuilder: (dialogContext, _, _) {
-                      Future.delayed(const Duration(seconds: 2), () {
-                        if (Navigator.of(dialogContext).canPop()) {
-                          Navigator.of(dialogContext).pop();
-                        }
-                      });
-
-                      return SafeArea(
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Container(
-                                width: 380,
-                                padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: const Color(0x55E7B3BE), width: 1.2),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x22000000),
-                                      blurRadius: 14,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '$roleLabel attendance submitted successfully.',
-                                      style: const TextStyle(
-                                        color: DashboardColors.text,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      '$presentCount/$total present ($rate%)',
-                                      style: const TextStyle(
-                                        color: DashboardColors.text,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    transitionBuilder: (context, animation, secondaryAnimation, child) {
-                      final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-                      return FadeTransition(
-                        opacity: curved,
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.08, -0.06),
-                            end: Offset.zero,
-                          ).animate(curved),
-                          child: child,
-                        ),
-                      );
-                    },
-                  );
-                },
+                onTap: onSubmit,
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
+                  width: isMobile ? double.infinity : 230,
                   height: 50,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
@@ -567,7 +565,7 @@ class _AttendanceListCard extends StatelessWidget {
                       'Submit Attendance',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 17 / 1.2,
+                        fontSize: 14.2,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -584,29 +582,27 @@ class _AttendanceListCard extends StatelessWidget {
 
 class _AttendanceRow extends StatelessWidget {
   const _AttendanceRow({
-    required this.name,
-    required this.id,
-    required this.initials,
-    required this.present,
+    required this.person,
+    required this.onToggle,
   });
 
-  final String name;
-  final String id;
-  final String initials;
-  final bool present;
+  final _AttendancePerson person;
+  final VoidCallback onToggle;
 
   @override
   Widget build(BuildContext context) {
-    final bg = present ? Colors.white : const Color(0xFFFDF7F8);
+    final bg = person.present ? Colors.white : const Color(0xFFFDF7F8);
+
     return _HoverLift(
       borderRadius: BorderRadius.circular(16),
+      onTap: onToggle,
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: present ? Colors.transparent : const Color(0x77E7B3BE),
+            color: person.present ? Colors.transparent : const Color(0x77E7B3BE),
             width: 1.4,
           ),
         ),
@@ -625,11 +621,11 @@ class _AttendanceRow extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  initials,
+                  person.initials,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
-                    fontSize: 18 / 1.2,
+                    fontSize: 15,
                   ),
                 ),
               ),
@@ -640,16 +636,18 @@ class _AttendanceRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    person.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: DashboardColors.text,
-                      fontSize: 34 / 2,
+                      fontSize: 17,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    id,
+                    person.id,
                     style: const TextStyle(
                       color: DashboardColors.text,
                       fontSize: 14.8,
@@ -660,7 +658,7 @@ class _AttendanceRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            _StatusPill(present: present),
+            _StatusPill(present: person.present),
           ],
         ),
       ),
@@ -689,7 +687,9 @@ class _HoverLiftState extends State<_HoverLift> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+      cursor: widget.onTap != null
+          ? SystemMouseCursors.click
+          : MouseCursor.defer,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: AnimatedContainer(
@@ -740,7 +740,9 @@ class _StatusPill extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            present ? Icons.check_circle_outline_rounded : Icons.cancel_outlined,
+            present
+                ? Icons.check_circle_outline_rounded
+                : Icons.cancel_outlined,
             color: present ? const Color(0xFF00953D) : const Color(0xFFD61625),
             size: 23,
           ),
@@ -748,8 +750,9 @@ class _StatusPill extends StatelessWidget {
           Text(
             present ? 'Present' : 'Absent',
             style: TextStyle(
-              color: present ? const Color(0xFF00953D) : const Color(0xFFD61625),
-              fontSize: 31 / 2,
+              color:
+                  present ? const Color(0xFF00953D) : const Color(0xFFD61625),
+              fontSize: 15.5,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -759,47 +762,11 @@ class _StatusPill extends StatelessWidget {
   }
 }
 
-// ignore: unused_element
-class _SmallFloatingPlus extends StatelessWidget {
-  const _SmallFloatingPlus({required this.size});
+class _AttendancePerson {
+  _AttendancePerson(this.name, this.id, this.initials, this.present);
 
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF2552C2), Color(0xFF2D65D7)],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x33EC3347),
-            blurRadius: 18,
-            spreadRadius: 3,
-          ),
-        ],
-      ),
-      child: Icon(
-        Icons.add,
-        color: Colors.white,
-        size: size * 0.52,
-      ),
-    );
-  }
+  final String name;
+  final String id;
+  final String initials;
+  bool present;
 }
-
-class _FloatingPlus extends StatelessWidget {
-  const _FloatingPlus();
-
-  @override
-  Widget build(BuildContext context) {
-    return const DashboardQuickActionsFab();
-  }
-}
-

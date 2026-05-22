@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'appbar.dart';
 import 'dashboard_colors.dart';
@@ -14,7 +14,7 @@ class AttendancePage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobileShell = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
+          backgroundColor: DashboardColors.pageSurface(context),
           drawer: isMobileShell
               ? const Drawer(child: DashboardSidebar(activeItem: 'Attendance', showCollapseButton: false))
               : null,
@@ -97,7 +97,7 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
             Column(
               children: [
                 DashboardTopBar(isMobile: isMobile),
-                const Divider(height: 1, color: DashboardColors.border),
+                Divider(height: 1, color: DashboardColors.borderFor(context)),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(
@@ -135,19 +135,25 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                               text: 'Students',
                               icon: Icons.school_outlined,
                               active: _selectedRole == _AttendanceRole.students,
-                              onTap: () => setState(() => _selectedRole = _AttendanceRole.students),
+                              onTap: () => setState(
+                                () => _selectedRole = _AttendanceRole.students,
+                              ),
                             ),
                             _RoleChip(
                               text: 'VTs',
                               icon: Icons.person_outline_rounded,
                               active: _selectedRole == _AttendanceRole.vts,
-                              onTap: () => setState(() => _selectedRole = _AttendanceRole.vts),
+                              onTap: () => setState(
+                                () => _selectedRole = _AttendanceRole.vts,
+                              ),
                             ),
                             _RoleChip(
                               text: 'VCs',
                               icon: Icons.person_search_outlined,
                               active: _selectedRole == _AttendanceRole.vcs,
-                              onTap: () => setState(() => _selectedRole = _AttendanceRole.vcs),
+                              onTap: () => setState(
+                                () => _selectedRole = _AttendanceRole.vcs,
+                              ),
                             ),
                           ],
                         ),
@@ -201,7 +207,10 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                SizedBox(width: 330, child: _AttendanceRateCard(rate: '$rate%')),
+                                SizedBox(
+                                  width: 330,
+                                  child: _AttendanceRateCard(rate: '$rate%'),
+                                ),
                               ],
                             ),
                           ),
@@ -218,11 +227,7 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                 ),
               ],
             ),
-            const Positioned(
-              right: 24,
-              bottom: 36,
-              child: _FloatingPlus(),
-            ),
+            const Positioned(right: 24, bottom: 36, child: _FloatingPlus()),
           ],
         );
       },
@@ -443,7 +448,12 @@ class _AttendanceListCard extends StatelessWidget {
           ),
           const Divider(height: 1, color: Color(0x33E7B3BE)),
           Padding(
-            padding: EdgeInsets.fromLTRB(isMobile ? 14 : 26, 10, isMobile ? 14 : 26, 12),
+            padding: EdgeInsets.fromLTRB(
+              isMobile ? 14 : 26,
+              10,
+              isMobile ? 14 : 26,
+              12,
+            ),
             child: Column(
               children: rows
                   .map(
@@ -470,7 +480,9 @@ class _AttendanceListCard extends StatelessWidget {
                 onTap: () {
                   final total = rows.length;
                   final presentCount = rows.where((row) => row.$4).length;
-                  final rate = total == 0 ? 0 : ((presentCount / total) * 100).round();
+                  final rate = total == 0
+                      ? 0
+                      : ((presentCount / total) * 100).round();
                   showGeneralDialog<void>(
                     context: context,
                     barrierLabel: 'Attendance submitted',
@@ -488,16 +500,28 @@ class _AttendanceListCard extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.topRight,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
+                            padding: const EdgeInsets.only(
+                              top: 16,
+                              right: 16,
+                              left: 16,
+                            ),
                             child: Material(
                               color: Colors.transparent,
                               child: Container(
                                 width: 380,
-                                padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+                                padding: const EdgeInsets.fromLTRB(
+                                  18,
+                                  16,
+                                  18,
+                                  16,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: const Color(0x55E7B3BE), width: 1.2),
+                                  border: Border.all(
+                                    color: const Color(0x55E7B3BE),
+                                    width: 1.2,
+                                  ),
                                   boxShadow: const [
                                     BoxShadow(
                                       color: Color(0x22000000),
@@ -535,19 +559,23 @@ class _AttendanceListCard extends StatelessWidget {
                         ),
                       );
                     },
-                    transitionBuilder: (context, animation, secondaryAnimation, child) {
-                      final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-                      return FadeTransition(
-                        opacity: curved,
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.08, -0.06),
-                            end: Offset.zero,
-                          ).animate(curved),
-                          child: child,
-                        ),
-                      );
-                    },
+                    transitionBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          final curved = CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeOutCubic,
+                          );
+                          return FadeTransition(
+                            opacity: curved,
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0.08, -0.06),
+                                end: Offset.zero,
+                              ).animate(curved),
+                              child: child,
+                            ),
+                          );
+                        },
                   );
                 },
                 child: Container(
@@ -669,11 +697,7 @@ class _AttendanceRow extends StatelessWidget {
 }
 
 class _HoverLift extends StatefulWidget {
-  const _HoverLift({
-    required this.child,
-    this.borderRadius,
-    this.onTap,
-  });
+  const _HoverLift({required this.child, this.borderRadius, this.onTap});
 
   final Widget child;
   final BorderRadius? borderRadius;
@@ -689,7 +713,9 @@ class _HoverLiftState extends State<_HoverLift> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+      cursor: widget.onTap != null
+          ? SystemMouseCursors.click
+          : MouseCursor.defer,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: AnimatedContainer(
@@ -740,7 +766,9 @@ class _StatusPill extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            present ? Icons.check_circle_outline_rounded : Icons.cancel_outlined,
+            present
+                ? Icons.check_circle_outline_rounded
+                : Icons.cancel_outlined,
             color: present ? const Color(0xFF00953D) : const Color(0xFFD61625),
             size: 23,
           ),
@@ -748,7 +776,9 @@ class _StatusPill extends StatelessWidget {
           Text(
             present ? 'Present' : 'Absent',
             style: TextStyle(
-              color: present ? const Color(0xFF00953D) : const Color(0xFFD61625),
+              color: present
+                  ? const Color(0xFF00953D)
+                  : const Color(0xFFD61625),
               fontSize: 31 / 2,
               fontWeight: FontWeight.w700,
             ),
@@ -778,18 +808,10 @@ class _SmallFloatingPlus extends StatelessWidget {
           colors: [Color(0xFF2552C2), Color(0xFF2D65D7)],
         ),
         boxShadow: [
-          BoxShadow(
-            color: Color(0x33EC3347),
-            blurRadius: 18,
-            spreadRadius: 3,
-          ),
+          BoxShadow(color: Color(0x33EC3347), blurRadius: 18, spreadRadius: 3),
         ],
       ),
-      child: Icon(
-        Icons.add,
-        color: Colors.white,
-        size: size * 0.52,
-      ),
+      child: Icon(Icons.add, color: Colors.white, size: size * 0.52),
     );
   }
 }
@@ -802,4 +824,3 @@ class _FloatingPlus extends StatelessWidget {
     return const DashboardQuickActionsFab();
   }
 }
-

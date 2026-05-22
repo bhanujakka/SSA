@@ -75,13 +75,13 @@ class DashboardQuickActionsFab extends StatelessWidget {
     Navigator.of(context).pop();
     switch (action) {
       case _QuickAction.addStudent:
-        Navigator.of(context).pushNamed('/vtp-manager/students');
+        Navigator.of(context).pushNamed('/vc-coordinator/students');
         break;
       case _QuickAction.markAttendance:
-        Navigator.of(context).pushNamed('/vtp-manager/attendance');
+        Navigator.of(context).pushNamed('/vc-coordinator/attendance');
         break;
       case _QuickAction.scheduleLecture:
-        Navigator.of(context).pushNamed('/vtp-manager/schedule-lecture');
+        Navigator.of(context).pushNamed('/vc-coordinator/schedule-lecture');
         break;
     }
   }
@@ -94,13 +94,17 @@ class _QuickActionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = DashboardColors.isDark(context);
     return Container(
       width: 300,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: DashboardColors.cardSurface(context),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE1E7F3), width: 1.5),
+        border: Border.all(
+          color: DashboardColors.borderFor(context),
+          width: 1.5,
+        ),
         boxShadow: const [
           BoxShadow(
             color: Color(0x2955709A),
@@ -116,6 +120,7 @@ class _QuickActionsMenu extends StatelessWidget {
             icon: Icons.person_add_alt_1_rounded,
             title: 'Add Student',
             subtitle: 'Create a new student profile',
+            isDark: isDark,
             onTap: () => onSelect(_QuickAction.addStudent),
           ),
           const SizedBox(height: 8),
@@ -123,6 +128,7 @@ class _QuickActionsMenu extends StatelessWidget {
             icon: Icons.fact_check_outlined,
             title: 'Mark Attendance',
             subtitle: 'Update today attendance status',
+            isDark: isDark,
             onTap: () => onSelect(_QuickAction.markAttendance),
           ),
           const SizedBox(height: 8),
@@ -130,6 +136,7 @@ class _QuickActionsMenu extends StatelessWidget {
             icon: Icons.event_note_outlined,
             title: 'Schedule Lecture',
             subtitle: 'Plan the next lecture session',
+            isDark: isDark,
             onTap: () => onSelect(_QuickAction.scheduleLecture),
           ),
         ],
@@ -159,18 +166,20 @@ class _QuickActionTile extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    required this.isDark,
     required this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
+  final bool isDark;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFFF8FAFF),
+      color: isDark ? const Color(0xFF17243A) : const Color(0xFFF8FAFF),
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
@@ -199,8 +208,10 @@ class _QuickActionTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        color: DashboardColors.text,
+                      style: TextStyle(
+                        color: isDark
+                            ? DashboardColors.darkText
+                            : DashboardColors.text,
                         fontWeight: FontWeight.w700,
                         fontSize: 15.5,
                       ),
@@ -210,8 +221,10 @@ class _QuickActionTile extends StatelessWidget {
                       subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Color(0xFF5B6A80),
+                      style: TextStyle(
+                        color: isDark
+                            ? DashboardColors.darkMutedText
+                            : const Color(0xFF5B6A80),
                         fontWeight: FontWeight.w500,
                         fontSize: 12.5,
                       ),

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'appbar.dart';
@@ -15,7 +15,7 @@ class VTManagementPage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
+          backgroundColor: DashboardColors.pageSurface(context),
           drawer: isMobile
               ? const Drawer(
                   child: DashboardSidebar(activeItem: 'VT Management', showCollapseButton: false),
@@ -90,7 +90,7 @@ class _VTBodyState extends State<_VTBody> {
             Column(
               children: [
                 DashboardTopBar(isMobile: isMobile),
-                const Divider(height: 1, color: DashboardColors.border),
+                Divider(height: 1, color: DashboardColors.borderFor(context)),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(
@@ -132,11 +132,14 @@ class _VTBodyState extends State<_VTBody> {
                               onTap: () => showDialog(
                                 context: context,
                                 barrierColor: const Color(0xA2000000),
-                                builder: (_) => _AddVTDialog(onAdd: _handleAddVt),
+                                builder: (_) =>
+                                    _AddVTDialog(onAdd: _handleAddVt),
                               ),
                               child: Container(
                                 height: 54,
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
                                 decoration: BoxDecoration(
                                   color: DashboardColors.red,
                                   borderRadius: BorderRadius.circular(18),
@@ -177,11 +180,7 @@ class _VTBodyState extends State<_VTBody> {
                               );
                             }
                             return Row(
-                              children: [
-                                titleBlock,
-                                const Spacer(),
-                                addButton,
-                              ],
+                              children: [titleBlock, const Spacer(), addButton],
                             );
                           },
                         ),
@@ -198,11 +197,7 @@ class _VTBodyState extends State<_VTBody> {
                 ),
               ],
             ),
-            const Positioned(
-              right: 24,
-              bottom: 36,
-              child: _FloatingPlus(),
-            ),
+            const Positioned(right: 24, bottom: 36, child: _FloatingPlus()),
           ],
         );
       },
@@ -406,7 +401,10 @@ class _VTTable extends StatelessWidget {
               children: [
                 Container(
                   color: const Color(0xFFD9DFF0),
-                  padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 26,
+                    vertical: 16,
+                  ),
                   child: const Row(
                     children: [
                       _HeaderCell('Name', flex: 15),
@@ -420,38 +418,38 @@ class _VTTable extends StatelessWidget {
                   ),
                 ),
                 ...rows.asMap().entries.map(
-                      (entry) => Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 26,
-                          vertical: 16,
-                        ),
-                        decoration: BoxDecoration(
-                          border: entry.key == rows.length - 1
-                              ? null
-                              : const Border(
-                                  bottom: BorderSide(
-                                    color: DashboardColors.border,
-                                    width: 1.5,
-                                  ),
-                                ),
-                        ),
-                        child: Row(
-                          children: [
-                            _DataCell(entry.value.name, flex: 15),
-                            _DataCell(entry.value.mobile, flex: 16),
-                            _DataCell(entry.value.subject, flex: 18),
-                            _DataCell(entry.value.school, flex: 17),
-                            _DataCell(entry.value.district, flex: 13),
-                            _UdiseCell(entry.value.udise, flex: 16),
-                            _ActionsCell(
-                              flex: 11,
-                              onView: () => onView(entry.value),
-                              onDelete: () => onDelete(entry.value),
-                            ),
-                          ],
-                        ),
-                      ),
+                  (entry) => Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 26,
+                      vertical: 16,
                     ),
+                    decoration: BoxDecoration(
+                      border: entry.key == rows.length - 1
+                          ? null
+                          : const Border(
+                              bottom: BorderSide(
+                                color: DashboardColors.border,
+                                width: 1.5,
+                              ),
+                            ),
+                    ),
+                    child: Row(
+                      children: [
+                        _DataCell(entry.value.name, flex: 15),
+                        _DataCell(entry.value.mobile, flex: 16),
+                        _DataCell(entry.value.subject, flex: 18),
+                        _DataCell(entry.value.school, flex: 17),
+                        _DataCell(entry.value.district, flex: 13),
+                        _UdiseCell(entry.value.udise, flex: 16),
+                        _ActionsCell(
+                          flex: 11,
+                          onView: () => onView(entry.value),
+                          onDelete: () => onDelete(entry.value),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -696,7 +694,10 @@ class _AddVTDialogState extends State<_AddVTDialog> {
   Widget build(BuildContext context) {
     final isCompact = MediaQuery.of(context).size.width < 980;
     return Dialog(
-      insetPadding: EdgeInsets.symmetric(horizontal: isCompact ? 10 : 26, vertical: 14),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: isCompact ? 10 : 26,
+        vertical: 14,
+      ),
       backgroundColor: Colors.transparent,
       child: Container(
         constraints: const BoxConstraints(maxWidth: 1160, maxHeight: 980),
@@ -717,19 +718,30 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                       children: [
                         Text(
                           'Add New VT',
-                          style: TextStyle(color: DashboardColors.text, fontSize: 42 / 2, fontWeight: FontWeight.w800),
+                          style: TextStyle(
+                            color: DashboardColors.text,
+                            fontSize: 42 / 2,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                         SizedBox(height: 2),
                         Text(
                           'Complete Vocational Trainer Information',
-                          style: TextStyle(color: DashboardColors.text, fontSize: 15, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                            color: DashboardColors.text,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close_rounded, color: DashboardColors.text),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: DashboardColors.text,
+                    ),
                   ),
                 ],
               ),
@@ -746,7 +758,12 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                       const _VTSection(title: 'Personal Information'),
                       _VTRow(
                         compact: isCompact,
-                        left: _VTField(label: 'Full Name *', hint: 'Enter full name', controller: _name, validator: _required),
+                        left: _VTField(
+                          label: 'Full Name *',
+                          hint: 'Enter full name',
+                          controller: _name,
+                          validator: _required,
+                        ),
                         right: _VTField(
                           label: 'Mobile Number *',
                           hint: '+91 XXXXX XXXXX',
@@ -787,7 +804,11 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                           onChanged: (v) => setState(() => _caste = v),
                           validator: _selectRequired,
                         ),
-                        right: _VTField(label: 'Sub-Caste', hint: 'Enter sub-caste', controller: _subCaste),
+                        right: _VTField(
+                          label: 'Sub-Caste',
+                          hint: 'Enter sub-caste',
+                          controller: _subCaste,
+                        ),
                       ),
                       _VTRow(
                         compact: isCompact,
@@ -796,17 +817,65 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                           hint: 'Select Religion',
                           dropdown: true,
                           value: _religion,
-                          options: const ['Hindu', 'Muslim', 'Christian', 'Sikh', 'Other'],
+                          options: const [
+                            'Hindu',
+                            'Muslim',
+                            'Christian',
+                            'Sikh',
+                            'Other',
+                          ],
                           onChanged: (v) => setState(() => _religion = v),
                           validator: _selectRequired,
                         ),
-                        right: _VTField(label: 'Native State *', hint: 'Enter native state', controller: _nativeState, validator: _required),
+                        right: _VTField(
+                          label: 'Native State *',
+                          hint: 'Enter native state',
+                          controller: _nativeState,
+                          validator: _required,
+                        ),
                       ),
-                      _VTRow(compact: isCompact, left: _VTField(label: 'Native District *', hint: 'Enter native district', controller: _nativeDistrict, validator: _required), right: const SizedBox.shrink()),
+                      _VTRow(
+                        compact: isCompact,
+                        left: _VTField(
+                          label: 'Native District *',
+                          hint: 'Enter native district',
+                          controller: _nativeDistrict,
+                          validator: _required,
+                        ),
+                        right: const SizedBox.shrink(),
+                      ),
                       const SizedBox(height: 12),
                       const _VTSection(title: 'School Assignment'),
-                      _VTRow(compact: isCompact, left: _VTField(label: 'District *', hint: 'Enter district', controller: _district, validator: _required), right: _VTField(label: 'Mandal *', hint: 'Enter mandal', controller: _mandal, validator: _required)),
-                      _VTRow(compact: isCompact, left: _VTField(label: 'School Name *', hint: 'Enter school name', controller: _school, validator: _required), right: _VTField(label: 'UDISE Code *', hint: 'Enter UDISE code', controller: _udise, validator: _required)),
+                      _VTRow(
+                        compact: isCompact,
+                        left: _VTField(
+                          label: 'District *',
+                          hint: 'Enter district',
+                          controller: _district,
+                          validator: _required,
+                        ),
+                        right: _VTField(
+                          label: 'Mandal *',
+                          hint: 'Enter mandal',
+                          controller: _mandal,
+                          validator: _required,
+                        ),
+                      ),
+                      _VTRow(
+                        compact: isCompact,
+                        left: _VTField(
+                          label: 'School Name *',
+                          hint: 'Enter school name',
+                          controller: _school,
+                          validator: _required,
+                        ),
+                        right: _VTField(
+                          label: 'UDISE Code *',
+                          hint: 'Enter UDISE code',
+                          controller: _udise,
+                          validator: _required,
+                        ),
+                      ),
                       _VTRow(
                         compact: isCompact,
                         left: _VTField(
@@ -852,15 +921,36 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                           onChanged: (v) => setState(() => _trade = v),
                           validator: _selectRequired,
                         ),
-                        right: _VTField(label: 'Sector of School *', hint: 'Enter sector/grade', controller: _sector, validator: _required),
+                        right: _VTField(
+                          label: 'Sector of School *',
+                          hint: 'Enter sector/grade',
+                          controller: _sector,
+                          validator: _required,
+                        ),
                       ),
-                      _VTField(label: 'Trade Wise Qualification *', hint: 'Enter qualifications and certifications', controller: _qualification, multiline: true, validator: _required),
+                      _VTField(
+                        label: 'Trade Wise Qualification *',
+                        hint: 'Enter qualifications and certifications',
+                        controller: _qualification,
+                        multiline: true,
+                        validator: _required,
+                      ),
                       const SizedBox(height: 12),
                       const _VTSection(title: 'Documents & ID'),
                       _VTRow(
                         compact: isCompact,
-                        left: _VTField(label: 'Aadhaar Number *', hint: 'XXXX-XXXX-XXXX', controller: _aadhaar, validator: _aadhaarValidator),
-                        right: _VTField(label: 'PAN Number *', hint: 'ABCDE1234F', controller: _pan, validator: _panValidator),
+                        left: _VTField(
+                          label: 'Aadhaar Number *',
+                          hint: 'XXXX-XXXX-XXXX',
+                          controller: _aadhaar,
+                          validator: _aadhaarValidator,
+                        ),
+                        right: _VTField(
+                          label: 'PAN Number *',
+                          hint: 'ABCDE1234F',
+                          controller: _pan,
+                          validator: _panValidator,
+                        ),
                       ),
                     ],
                   ),
@@ -881,10 +971,22 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                           onPressed: () => Navigator.pop(context),
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(105, 50),
-                            side: const BorderSide(color: Color(0x66E7B3BE), width: 1.6),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            side: const BorderSide(
+                              color: Color(0x66E7B3BE),
+                              width: 1.6,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
-                          child: const Text('Cancel', style: TextStyle(color: DashboardColors.text, fontWeight: FontWeight.w700, fontSize: 17)),
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: DashboardColors.text,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 17,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 12),
                         InkWell(
@@ -903,7 +1005,11 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                             child: const Center(
                               child: Text(
                                 'Add VT',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
@@ -918,10 +1024,22 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(105, 50),
-                          side: const BorderSide(color: Color(0x66E7B3BE), width: 1.6),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          side: const BorderSide(
+                            color: Color(0x66E7B3BE),
+                            width: 1.6,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
-                        child: const Text('Cancel', style: TextStyle(color: DashboardColors.text, fontWeight: FontWeight.w700, fontSize: 17)),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: DashboardColors.text,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 17,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 14),
                       InkWell(
@@ -941,7 +1059,11 @@ class _AddVTDialogState extends State<_AddVTDialog> {
                           child: const Center(
                             child: Text(
                               'Add VT',
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                         ),
@@ -957,8 +1079,10 @@ class _AddVTDialogState extends State<_AddVTDialog> {
     );
   }
 
-  String? _required(String? v) => (v == null || v.trim().isEmpty) ? 'Required' : null;
-  String? _selectRequired(String? v) => (v == null || v.isEmpty) ? 'Please select' : null;
+  String? _required(String? v) =>
+      (v == null || v.trim().isEmpty) ? 'Required' : null;
+  String? _selectRequired(String? v) =>
+      (v == null || v.isEmpty) ? 'Please select' : null;
 
   Future<void> _pickDate(TextEditingController controller) async {
     final now = DateTime.now();
@@ -996,7 +1120,8 @@ class _AddVTDialogState extends State<_AddVTDialog> {
   String? _panValidator(String? v) {
     if (v == null || v.trim().isEmpty) return 'Required';
     final value = v.trim().toUpperCase();
-    if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(value)) return 'Invalid PAN';
+    if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(value))
+      return 'Invalid PAN';
     return null;
   }
 
@@ -1011,9 +1136,9 @@ class _AddVTDialogState extends State<_AddVTDialog> {
       udise: _udise.text.trim(),
     );
     widget.onAdd(created);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('VT added successfully.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('VT added successfully.')));
     Navigator.pop(context);
   }
 }
@@ -1028,7 +1153,14 @@ class _VTSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(color: DashboardColors.text, fontSize: 34 / 2, fontWeight: FontWeight.w800)),
+        Text(
+          title,
+          style: const TextStyle(
+            color: DashboardColors.text,
+            fontSize: 34 / 2,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
         const SizedBox(height: 8),
       ],
     );
@@ -1036,7 +1168,11 @@ class _VTSection extends StatelessWidget {
 }
 
 class _VTRow extends StatelessWidget {
-  const _VTRow({required this.compact, required this.left, required this.right});
+  const _VTRow({
+    required this.compact,
+    required this.left,
+    required this.right,
+  });
 
   final bool compact;
   final Widget left;
@@ -1103,25 +1239,68 @@ class _VTField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: DashboardColors.text, fontWeight: FontWeight.w700, fontSize: 15)),
+        Text(
+          label,
+          style: const TextStyle(
+            color: DashboardColors.text,
+            fontWeight: FontWeight.w700,
+            fontSize: 15,
+          ),
+        ),
         const SizedBox(height: 6),
         if (dropdown)
           DropdownButtonFormField<String>(
             initialValue: value,
             validator: validator,
             onChanged: onChanged,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded, color: DashboardColors.text),
-            items: (options ?? const <String>[]).map((e) => DropdownMenuItem<String>(value: e, child: Text(e))).toList(),
+            icon: const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: DashboardColors.text,
+            ),
+            items: (options ?? const <String>[])
+                .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
+                .toList(),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(color: DashboardColors.text, fontSize: 31 / 2, fontWeight: FontWeight.w500),
+              hintStyle: const TextStyle(
+                color: DashboardColors.text,
+                fontSize: 31 / 2,
+                fontWeight: FontWeight.w500,
+              ),
               filled: true,
               fillColor: const Color(0xFFF3F4F6),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: DashboardColors.border, width: 2)),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: DashboardColors.border, width: 2)),
-              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Colors.redAccent, width: 1.4)),
-              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Colors.redAccent, width: 1.4)),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 10,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: DashboardColors.border,
+                  width: 2,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: DashboardColors.border,
+                  width: 2,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.4,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.4,
+                ),
+              ),
             ),
           )
         else
@@ -1140,22 +1319,49 @@ class _VTField extends StatelessWidget {
                       icon: Icon(icon, size: 17, color: Colors.black87),
                     ),
               hintStyle: TextStyle(
-                color: multiline ? const Color(0xFF7B8FA6) : DashboardColors.text,
+                color: multiline
+                    ? const Color(0xFF7B8FA6)
+                    : DashboardColors.text,
                 fontSize: 31 / 2,
                 fontWeight: FontWeight.w500,
               ),
               filled: multiline,
               fillColor: multiline ? const Color(0xFFF3F4F6) : null,
-              contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: multiline ? 14 : 10),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: DashboardColors.border, width: 2)),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: DashboardColors.border, width: 2)),
-              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Colors.redAccent, width: 1.4)),
-              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Colors.redAccent, width: 1.4)),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: multiline ? 14 : 10,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: DashboardColors.border,
+                  width: 2,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: DashboardColors.border,
+                  width: 2,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.4,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.4,
+                ),
+              ),
             ),
           ),
       ],
     );
   }
 }
-
-

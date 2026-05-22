@@ -1,4 +1,4 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'appbar.dart';
@@ -15,7 +15,7 @@ class DashboardPage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
+          backgroundColor: DashboardColors.pageSurface(context),
           drawer: isMobile
               ? const Drawer(child: DashboardSidebar(activeItem: 'Dashboard', showCollapseButton: false))
               : null,
@@ -50,7 +50,7 @@ class _DashboardBody extends StatelessWidget {
             Column(
               children: [
                 DashboardTopBar(isMobile: isMobile),
-                const Divider(height: 1, color: DashboardColors.border),
+                Divider(height: 1, color: DashboardColors.borderFor(context)),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.all(isMobile ? 14 : 22),
@@ -72,11 +72,7 @@ class _DashboardBody extends StatelessWidget {
               ],
             ),
             if (!isMobile)
-              const Positioned(
-                right: 24,
-                bottom: 36,
-                child: _FloatingPlus(),
-              ),
+              const Positioned(right: 24, bottom: 36, child: _FloatingPlus()),
           ],
         );
       },
@@ -99,10 +95,7 @@ class _HeroBanner extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF2552C2),
-                Color(0xFF2D65D7),
-              ],
+              colors: [Color(0xFF2552C2), Color(0xFF2D65D7)],
             ),
           ),
           child: ClipRRect(
@@ -167,10 +160,15 @@ class _HeroBanner extends StatelessWidget {
                         children: [
                           InkWell(
                             borderRadius: BorderRadius.circular(18),
-                            onTap: () => Navigator.pushReplacementNamed(context, '/reports'),
+                            onTap: () => Navigator.pushReplacementNamed(
+                              context,
+                              '/vc-coordinator/reports',
+                            ),
                             child: Container(
                               height: 54,
-                              padding: const EdgeInsets.symmetric(horizontal: 28),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 28,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(18),
@@ -198,12 +196,20 @@ class _HeroBanner extends StatelessWidget {
                           ),
                           InkWell(
                             borderRadius: BorderRadius.circular(18),
-                            onTap: () => Navigator.pushReplacementNamed(context, '/vt-management'),
+                            onTap: () => Navigator.pushReplacementNamed(
+                              context,
+                              '/vc-coordinator/vt-management',
+                            ),
                             child: Container(
                               height: 54,
-                              padding: const EdgeInsets.symmetric(horizontal: 24),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
                               decoration: BoxDecoration(
-                                border: Border.all(color: const Color(0x60FFFFFF), width: 2),
+                                border: Border.all(
+                                  color: const Color(0x60FFFFFF),
+                                  width: 2,
+                                ),
                                 borderRadius: BorderRadius.circular(18),
                                 color: const Color(0x25FFFFFF),
                               ),
@@ -338,7 +344,9 @@ class _StatCardState extends State<_StatCard> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: _isHovered ? const Color(0xFF7398E4) : DashboardColors.border,
+            color: _isHovered
+                ? const Color(0xFF7398E4)
+                : DashboardColors.border,
             width: 2,
           ),
           boxShadow: _isHovered
@@ -376,7 +384,10 @@ class _StatCardState extends State<_StatCard> {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFCEF3D8),
                           borderRadius: BorderRadius.circular(22),
@@ -479,7 +490,10 @@ class _BillingSectionState extends State<_BillingSection> {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: DashboardColors.red,
                   borderRadius: BorderRadius.circular(16),
@@ -513,37 +527,55 @@ class _BillingSectionState extends State<_BillingSection> {
                             bars.length,
                             (index) => Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                ),
                                 child: MouseRegion(
-                                  onEnter: (_) => setState(() => _hoveredIndex = index),
-                                  onExit: (_) => setState(() => _hoveredIndex = null),
+                                  onEnter: (_) =>
+                                      setState(() => _hoveredIndex = index),
+                                  onExit: (_) =>
+                                      setState(() => _hoveredIndex = null),
                                   child: Stack(
                                     clipBehavior: Clip.none,
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
                                           color: const Color(0x0FE83B52),
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
                                         ),
                                         child: Align(
                                           alignment: Alignment.bottomCenter,
                                           child: FractionallySizedBox(
                                             heightFactor: bars[index] / 80000,
                                             child: AnimatedContainer(
-                                              duration: const Duration(milliseconds: 140),
+                                              duration: const Duration(
+                                                milliseconds: 140,
+                                              ),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(9),
+                                                borderRadius:
+                                                    BorderRadius.circular(9),
                                                 gradient: LinearGradient(
                                                   begin: Alignment.topCenter,
                                                   end: Alignment.bottomCenter,
                                                   colors: _hoveredIndex == index
-                                                      ? const [Color(0xFF4F86E7), Color(0xFF1F43A3)]
-                                                      : const [Color(0xFF2552C2), Color(0xFF1F43A3)],
+                                                      ? const [
+                                                          Color(0xFF4F86E7),
+                                                          Color(0xFF1F43A3),
+                                                        ]
+                                                      : const [
+                                                          Color(0xFF2552C2),
+                                                          Color(0xFF1F43A3),
+                                                        ],
                                                 ),
-                                                boxShadow: _hoveredIndex == index
+                                                boxShadow:
+                                                    _hoveredIndex == index
                                                     ? const [
                                                         BoxShadow(
-                                                          color: Color(0x40EF3348),
+                                                          color: Color(
+                                                            0x40EF3348,
+                                                          ),
                                                           blurRadius: 12,
                                                           offset: Offset(0, 4),
                                                         ),
@@ -553,16 +585,24 @@ class _BillingSectionState extends State<_BillingSection> {
                                               child: _hoveredIndex == index
                                                   ? Center(
                                                       child: Padding(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 4,
+                                                            ),
                                                         child: Text(
                                                           '${labels[index]}\nRs ${bars[index].toInt()}',
-                                                          textAlign: TextAlign.center,
-                                                          style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 10.5,
-                                                            fontWeight: FontWeight.w700,
-                                                            height: 1.2,
-                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style:
+                                                              const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 10.5,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                                height: 1.2,
+                                                              ),
                                                         ),
                                                       ),
                                                     )
@@ -719,11 +759,16 @@ class _ActivitiesCardState extends State<_ActivitiesCard> {
                   children: [
                     CustomPaint(
                       size: const Size(180, 180),
-                      painter: _DonutChartPainter(highlightIndex: _hoveredIndex),
+                      painter: _DonutChartPainter(
+                        highlightIndex: _hoveredIndex,
+                      ),
                     ),
                     if (_hoveredIndex != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: legendItems[_hoveredIndex!].$3,
                           borderRadius: BorderRadius.circular(10),
@@ -751,7 +796,10 @@ class _ActivitiesCardState extends State<_ActivitiesCard> {
                   Container(
                     width: 12,
                     height: 12,
-                    decoration: BoxDecoration(color: item.$3, shape: BoxShape.circle),
+                    decoration: BoxDecoration(
+                      color: item.$3,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -786,10 +834,34 @@ class _RecentActivitiesCard extends StatelessWidget {
   const _RecentActivitiesCard();
 
   static const entries = [
-    ('1', 'New student enrolled', 'Government High School, Delhi', '5 min ago', [Color(0xFF2552C2), Color(0xFF1F43A3)]),
-    ('2', 'Guest lecture scheduled', 'Central Vocational Institute', '12 min ago', [Color(0xFF2D65D7), Color(0xFF0F172A)]),
-    ('3', 'Attendance report submitted', 'Skill Development Center', '25 min ago', [Color(0xFF7398E4), Color(0xFF2D65D7)]),
-    ('4', 'Bill generated and approved', 'Technical Training Hub', '1 hour ago', [Color(0xFF2D65D7), Color(0xFF1F43A3)]),
+    (
+      '1',
+      'New student enrolled',
+      'Government High School, Delhi',
+      '5 min ago',
+      [Color(0xFF2552C2), Color(0xFF1F43A3)],
+    ),
+    (
+      '2',
+      'Guest lecture scheduled',
+      'Central Vocational Institute',
+      '12 min ago',
+      [Color(0xFF2D65D7), Color(0xFF0F172A)],
+    ),
+    (
+      '3',
+      'Attendance report submitted',
+      'Skill Development Center',
+      '25 min ago',
+      [Color(0xFF7398E4), Color(0xFF2D65D7)],
+    ),
+    (
+      '4',
+      'Bill generated and approved',
+      'Technical Training Hub',
+      '1 hour ago',
+      [Color(0xFF2D65D7), Color(0xFF1F43A3)],
+    ),
   ];
 
   @override
@@ -1023,7 +1095,3 @@ class _StatItem {
   final IconData icon;
   final List<Color> tileGradient;
 }
-
-
-
-

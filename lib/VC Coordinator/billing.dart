@@ -1,4 +1,3 @@
-﻿
 import 'package:flutter/material.dart';
 
 import 'appbar.dart';
@@ -18,8 +17,10 @@ class BillingPage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobileShell = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
-          drawer: isMobileShell ? const Drawer(child: DashboardSidebar(activeItem: 'Billing', showCollapseButton: false)) : null,
+          backgroundColor: DashboardColors.pageSurface(context),
+          drawer: isMobileShell
+              ? const Drawer(child: DashboardSidebar(activeItem: 'Billing', showCollapseButton: false))
+              : null,
           body: SafeArea(
             child: Row(
               children: [
@@ -43,7 +44,7 @@ class _BillingBody extends StatelessWidget {
       'BILL-VC-\n2024-001',
       'Amit Verma',
       'Tech Skill Pvt Ltd',
-      '45,000',
+      '?45,000',
       '10/4/2026',
       _BillStatus.paid,
     ),
@@ -93,7 +94,9 @@ class _BillingBody extends StatelessWidget {
   }
 
   static String _safeFilePart(String value) {
-    return value.replaceAll(RegExp(r'[\\/:*?"<>|\s]+'), '_').replaceAll('\n', '_');
+    return value
+        .replaceAll(RegExp(r'[\\/:*?"<>|\s]+'), '_')
+        .replaceAll('\n', '_');
   }
 
   static Future<void> _downloadBill(
@@ -109,7 +112,8 @@ class _BillingBody extends StatelessWidget {
       final status = _statusLabel(row.$6);
 
       final fileName = '${_safeFilePart(billId)}_bill.txt';
-      final content = '''
+      final content =
+          '''
 VC BILL
 Bill ID: $billId
 VC Name: $vcName
@@ -119,7 +123,10 @@ Date: $date
 Status: $status
 Generated On: ${DateTime.now()}
 ''';
-      final savedLocation = await downloadBillFile(fileName: fileName, content: content);
+      final savedLocation = await downloadBillFile(
+        fileName: fileName,
+        content: content,
+      );
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -150,10 +157,15 @@ Generated On: ${DateTime.now()}
             Column(
               children: [
                 DashboardTopBar(isMobile: isMobile),
-                const Divider(height: 1, color: DashboardColors.border),
+                Divider(height: 1, color: DashboardColors.borderFor(context)),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(pagePadding, 22, pagePadding, 20),
+                    padding: EdgeInsets.fromLTRB(
+                      pagePadding,
+                      22,
+                      pagePadding,
+                      20,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -215,11 +227,7 @@ Generated On: ${DateTime.now()}
                 ),
               ],
             ),
-            const Positioned(
-              right: 24,
-              bottom: 36,
-              child: _FloatingPlus(),
-            ),
+            const Positioned(right: 24, bottom: 36, child: _FloatingPlus()),
           ],
         );
       },
@@ -244,7 +252,9 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardWidth = MediaQuery.of(context).size.width < 980 ? MediaQuery.of(context).size.width - 28 : 324.0;
+    final cardWidth = MediaQuery.of(context).size.width < 980
+        ? MediaQuery.of(context).size.width - 28
+        : 324.0;
     return Container(
       width: cardWidth.clamp(260.0, 324.0).toDouble(),
       padding: const EdgeInsets.fromLTRB(24, 22, 24, 18),
@@ -304,7 +314,8 @@ class _BillsTableCard extends StatelessWidget {
 
   final bool isMobile;
   final List<(String, String, String, String, String, _BillStatus)> rows;
-  final void Function((String, String, String, String, String, _BillStatus)) onDownload;
+  final void Function((String, String, String, String, String, _BillStatus))
+  onDownload;
 
   @override
   Widget build(BuildContext context) {
@@ -339,7 +350,10 @@ class _BillsTableCard extends StatelessWidget {
               child: Column(
                 children: [
                   const _HeaderRow(),
-                  ...rows.map((row) => _BillRow(row: row, onDownload: () => onDownload(row))),
+                  ...rows.map(
+                    (row) =>
+                        _BillRow(row: row, onDownload: () => onDownload(row)),
+                  ),
                 ],
               ),
             ),
@@ -559,4 +573,3 @@ class _FloatingPlus extends StatelessWidget {
     return const DashboardQuickActionsFab();
   }
 }
-

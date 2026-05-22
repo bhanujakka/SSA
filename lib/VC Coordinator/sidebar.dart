@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dashboard_colors.dart';
 
 class DashboardSidebarController {
@@ -53,14 +53,27 @@ class DashboardSidebar extends StatefulWidget {
   final bool showCollapseButton;
 
   static const menuItems = [
-    ('Dashboard', Icons.grid_view_rounded, '/dashboard'),
-    ('VC Management', Icons.supervised_user_circle_outlined, '/vc-management'),
-    ('VT Management', Icons.person_add_alt_1_outlined, '/vt-management'),
-    ('Students', Icons.school_outlined, '/students'),
-    ('Attendance', Icons.event_note_outlined, '/attendance'),
-    ('Billing', Icons.currency_rupee_rounded, '/billing'),
-    ('Reports', Icons.bar_chart_rounded, '/reports'),
-    ('My Profile', Icons.person_outline_rounded, '/my-profile'),
+    ('Dashboard', Icons.grid_view_rounded, '/vc-coordinator/dashboard'),
+    (
+      'VT Management',
+      Icons.person_add_alt_1_outlined,
+      '/vc-coordinator/vt-management',
+    ),
+    ('Students', Icons.school_outlined, '/vc-coordinator/students'),
+    ('Attendance', Icons.event_note_outlined, '/vc-coordinator/attendance'),
+    (
+      'VC Monitoring',
+      Icons.supervised_user_circle_outlined,
+      '/vc-coordinator/vc-monitoring',
+    ),
+    (
+      'VC Portal',
+      Icons.manage_accounts_outlined,
+      '/vc-coordinator/vc-portal',
+    ),
+    ('Billing', Icons.currency_rupee_rounded, '/vc-coordinator/billing'),
+    ('Reports', Icons.bar_chart_rounded, '/vc-coordinator/reports'),
+    ('My Profile', Icons.person_outline_rounded, '/vc-coordinator/my-profile'),
   ];
 
   @override

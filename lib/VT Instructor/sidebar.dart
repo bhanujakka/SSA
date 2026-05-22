@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dashboard_colors.dart';
 
 class DashboardSidebarController {
@@ -53,14 +53,54 @@ class DashboardSidebar extends StatefulWidget {
   final bool showCollapseButton;
 
   static const menuItems = [
-    ('Dashboard', Icons.grid_view_rounded, '/dashboard'),
-    ('VC Management', Icons.supervised_user_circle_outlined, '/vc-management'),
-    ('VT Management', Icons.person_add_alt_1_outlined, '/vt-management'),
-    ('Students', Icons.school_outlined, '/students'),
-    ('Attendance', Icons.event_note_outlined, '/attendance'),
-    ('Billing', Icons.currency_rupee_rounded, '/billing'),
-    ('Reports', Icons.bar_chart_rounded, '/reports'),
-    ('My Profile', Icons.person_outline_rounded, '/my-profile'),
+    ('Dashboard', Icons.grid_view_rounded, '/vt-instructor/dashboard'),
+    ('Students', Icons.school_outlined, '/vt-instructor/students'),
+    (
+      'Student Enrollment',
+      Icons.person_add_alt_1_outlined,
+      '/vt-instructor/student-enrollment'
+    ),
+    (
+      'Exit Survey',
+      Icons.assignment_turned_in_outlined,
+      '/vt-instructor/exit-survey'
+    ),
+    ('Attendance', Icons.event_note_outlined, '/vt-instructor/attendance'),
+    (
+      'Class Monitor',
+      Icons.fact_check_outlined,
+      '/vt-instructor/class-monitor'
+    ),
+    ('Textbooks', Icons.menu_book_outlined, '/vt-instructor/textbooks'),
+    (
+      'VC Monitoring',
+      Icons.supervised_user_circle_outlined,
+      '/vt-instructor/vc-monitoring'
+    ),
+    (
+      'Raw Materials',
+      Icons.inventory_2_outlined,
+      '/vt-instructor/raw-materials'
+    ),
+    (
+      'Parent Teacher Meeting',
+      Icons.groups_2_outlined,
+      '/vt-instructor/parent-teacher-meeting'
+    ),
+    ('Internships', Icons.work_outline_rounded, '/vt-instructor/internships'),
+    ('Exam Marks', Icons.grade_outlined, '/vt-instructor/exam-marks'),
+    (
+      'Teaching Register',
+      Icons.app_registration_outlined,
+      '/vt-instructor/teaching-register'
+    ),
+    (
+      'Schedule Lecture',
+      Icons.event_note_outlined,
+      '/vt-instructor/schedule-lecture'
+    ),
+    ('Lesson Plan', Icons.event_available_outlined, '/vt-instructor/lesson-plan'),
+    ('My Profile', Icons.person_outline_rounded, '/vt-instructor/my-profile'),
   ];
 
   @override

@@ -1,4 +1,4 @@
-ï»¿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'appbar.dart';
@@ -1023,7 +1023,7 @@ class _AddStudentSectionState extends State<_AddStudentSection> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: errors.map((error) => Text('â€¢ $error')).toList(),
+            children: errors.map((error) => Text('• $error')).toList(),
           ),
           actions: [
             TextButton(
@@ -1594,7 +1594,7 @@ class _EditStudentDialogState extends State<_EditStudentDialog> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: errors.map((error) => Text('â€¢ $error')).toList(),
+            children: errors.map((error) => Text('• $error')).toList(),
           ),
           actions: [
             TextButton(

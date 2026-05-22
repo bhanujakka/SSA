@@ -1,4 +1,4 @@
-﻿import 'package:file_picker/file_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,8 +16,10 @@ class MyProfilePage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobileShell = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
-          drawer: isMobileShell ? const Drawer(child: DashboardSidebar(activeItem: 'My Profile', showCollapseButton: false)) : null,
+          backgroundColor: DashboardColors.pageSurface(context),
+          drawer: isMobileShell
+              ? const Drawer(child: DashboardSidebar(activeItem: 'My Profile', showCollapseButton: false))
+              : null,
           body: SafeArea(
             child: Row(
               children: [
@@ -102,9 +104,12 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
 
       setState(() {
         _fieldErrors.clear();
-        _draftProfile['pan'] = (_draftProfile['pan'] ?? '').trim().toUpperCase();
+        _draftProfile['pan'] = (_draftProfile['pan'] ?? '')
+            .trim()
+            .toUpperCase();
         _draftProfile['phone'] = (_draftProfile['phone'] ?? '').trim();
-        _draftProfile['alternatePhone'] = (_draftProfile['alternatePhone'] ?? '').trim();
+        _draftProfile['alternatePhone'] =
+            (_draftProfile['alternatePhone'] ?? '').trim();
         _draftProfile['aadhaar'] = (_draftProfile['aadhaar'] ?? '').trim();
         _savedProfile = Map<String, String>.from(_draftProfile);
         _isEditing = false;
@@ -150,7 +155,8 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
 
   Future<void> _pickDob() async {
     final now = DateTime.now();
-    final initial = _parseDob(_draftProfile['dob']) ?? DateTime(now.year - 25, 1, 1);
+    final initial =
+        _parseDob(_draftProfile['dob']) ?? DateTime(now.year - 25, 1, 1);
     final selected = await showDatePicker(
       context: context,
       initialDate: initial,
@@ -179,7 +185,8 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
   Map<String, String> _validateDraftProfile() {
     final errors = <String, String>{};
     bool isBlank(String key) => (_draftProfile[key] ?? '').trim().isEmpty;
-    String digitsOnly(String key) => (_draftProfile[key] ?? '').replaceAll(RegExp(r'\D'), '');
+    String digitsOnly(String key) =>
+        (_draftProfile[key] ?? '').replaceAll(RegExp(r'\D'), '');
 
     if (isBlank('firstName')) errors['firstName'] = 'First Name is required.';
     if (isBlank('lastName')) errors['lastName'] = 'Last Name is required.';
@@ -187,8 +194,10 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
     if (isBlank('gender')) errors['gender'] = 'Gender is required.';
     if (isBlank('email')) errors['email'] = 'Email Address is required.';
     if (isBlank('phone')) errors['phone'] = 'Phone Number is required.';
-    if (isBlank('organization')) errors['organization'] = 'Organization is required.';
-    if (isBlank('designation')) errors['designation'] = 'Designation is required.';
+    if (isBlank('organization'))
+      errors['organization'] = 'Organization is required.';
+    if (isBlank('designation'))
+      errors['designation'] = 'Designation is required.';
     if (isBlank('address')) errors['address'] = 'Address is required.';
     if (isBlank('city')) errors['city'] = 'City is required.';
     if (isBlank('state')) errors['state'] = 'State is required.';
@@ -206,7 +215,8 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
     }
 
     final alternatePhone = digitsOnly('alternatePhone');
-    if (alternatePhone.isNotEmpty && (alternatePhone.length < 10 || alternatePhone.length > 12)) {
+    if (alternatePhone.isNotEmpty &&
+        (alternatePhone.length < 10 || alternatePhone.length > 12)) {
       errors['alternatePhone'] = 'Alternate Phone should have 10 to 12 digits.';
     }
 
@@ -216,7 +226,8 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
     }
 
     final pan = (_draftProfile['pan'] ?? '').trim();
-    if (pan.isNotEmpty && !RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$').hasMatch(pan.toUpperCase())) {
+    if (pan.isNotEmpty &&
+        !RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$').hasMatch(pan.toUpperCase())) {
       errors['pan'] = 'Enter a valid PAN Number (e.g., ABCDE1234F).';
     }
 
@@ -298,7 +309,7 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
             Column(
               children: [
                 DashboardTopBar(isMobile: isMobile),
-                const Divider(height: 1, color: DashboardColors.border),
+                Divider(height: 1, color: DashboardColors.borderFor(context)),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(
@@ -323,7 +334,9 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
                               ),
                             ),
                             _EditProfileButton(
-                              label: _isEditing ? 'Save Profile' : 'Edit Profile',
+                              label: _isEditing
+                                  ? 'Save Profile'
+                                  : 'Edit Profile',
                               onTap: _onEditButtonTap,
                             ),
                           ],
@@ -395,11 +408,7 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
                 ),
               ],
             ),
-            const Positioned(
-              right: 24,
-              bottom: 36,
-              child: _FloatingPlus(),
-            ),
+            const Positioned(right: 24, bottom: 36, child: _FloatingPlus()),
           ],
         );
       },
@@ -541,7 +550,10 @@ class _ProfileInfoCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _SectionHeader(title: 'Personal Information', icon: Icons.person_outline_rounded),
+          const _SectionHeader(
+            title: 'Personal Information',
+            icon: Icons.person_outline_rounded,
+          ),
           const SizedBox(height: 18),
           _TwoFields(
             left: _Field(
@@ -621,7 +633,10 @@ class _ContactInfoCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _SectionHeader(title: 'Contact Information', icon: Icons.call_outlined),
+          const _SectionHeader(
+            title: 'Contact Information',
+            icon: Icons.call_outlined,
+          ),
           const SizedBox(height: 18),
           _TwoFields(
             left: _Field(
@@ -680,7 +695,10 @@ class _OrganizationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _SectionHeader(title: 'Organization & Address', icon: Icons.business_outlined),
+          const _SectionHeader(
+            title: 'Organization & Address',
+            icon: Icons.business_outlined,
+          ),
           const SizedBox(height: 18),
           _TwoFields(
             left: _Field(
@@ -782,13 +800,7 @@ class _TwoFields extends StatelessWidget {
       builder: (context, constraints) {
         final isCompact = constraints.maxWidth < 760;
         if (isCompact) {
-          return Column(
-            children: [
-              left,
-              const SizedBox(height: 12),
-              right,
-            ],
-          );
+          return Column(children: [left, const SizedBox(height: 12), right]);
         }
         return Row(
           children: [
@@ -849,7 +861,9 @@ class _Field extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: errorText == null ? const Color(0x66E8A9B3) : const Color(0xFFB91C1C),
+              color: errorText == null
+                  ? const Color(0x66E8A9B3)
+                  : const Color(0xFFB91C1C),
               width: 1.7,
             ),
           ),
@@ -931,7 +945,10 @@ class _Field extends StatelessWidget {
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     return newValue.copyWith(text: newValue.text.toUpperCase());
   }
 }
@@ -953,7 +970,10 @@ class _DocumentsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _SectionHeader(title: 'Documents', icon: Icons.description_outlined),
+          const _SectionHeader(
+            title: 'Documents',
+            icon: Icons.description_outlined,
+          ),
           const SizedBox(height: 2),
           const Text(
             'Upload required documents',
@@ -1078,14 +1098,19 @@ class _DocumentItem extends StatelessWidget {
                 height: 42,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0x66E8A9B3), width: 1.5),
+                  border: Border.all(
+                    color: const Color(0x66E8A9B3),
+                    width: 1.5,
+                  ),
                 ),
                 child: Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        uploadedFileName == null ? Icons.upload_outlined : Icons.check_circle_outline_rounded,
+                        uploadedFileName == null
+                            ? Icons.upload_outlined
+                            : Icons.check_circle_outline_rounded,
                         color: DashboardColors.text,
                         size: 20,
                       ),
@@ -1111,10 +1136,7 @@ class _DocumentItem extends StatelessWidget {
 }
 
 class _EditProfileButton extends StatelessWidget {
-  const _EditProfileButton({
-    required this.label,
-    required this.onTap,
-  });
+  const _EditProfileButton({required this.label, required this.onTap});
 
   final String label;
   final VoidCallback onTap;
@@ -1189,4 +1211,3 @@ class _FloatingPlus extends StatelessWidget {
     return const DashboardQuickActionsFab();
   }
 }
-

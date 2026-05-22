@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dashboard_colors.dart';
 
 class DashboardSidebarController {
@@ -53,14 +53,15 @@ class DashboardSidebar extends StatefulWidget {
   final bool showCollapseButton;
 
   static const menuItems = [
-    ('Dashboard', Icons.grid_view_rounded, '/dashboard'),
-    ('VC Management', Icons.supervised_user_circle_outlined, '/vc-management'),
-    ('VT Management', Icons.person_add_alt_1_outlined, '/vt-management'),
-    ('Students', Icons.school_outlined, '/students'),
-    ('Attendance', Icons.event_note_outlined, '/attendance'),
-    ('Billing', Icons.currency_rupee_rounded, '/billing'),
-    ('Reports', Icons.bar_chart_rounded, '/reports'),
-    ('My Profile', Icons.person_outline_rounded, '/my-profile'),
+    ('Dashboard', Icons.grid_view_rounded, '/ssa/dashboard'),
+    ('VTP Management', Icons.business_rounded, '/ssa/vtp-management'),
+    ('VC Management', Icons.supervised_user_circle_outlined, '/ssa/vc-management'),
+    ('VT Management', Icons.person_add_alt_1_outlined, '/ssa/vt-management'),
+    ('Students', Icons.school_outlined, '/ssa/students'),
+    ('Attendance', Icons.event_note_outlined, '/ssa/attendance'),
+    ('Billing', Icons.currency_rupee_rounded, '/ssa/billing'),
+    ('Reports', Icons.bar_chart_rounded, '/ssa/reports'),
+    ('My Profile', Icons.person_outline_rounded, '/ssa/my-profile'),
   ];
 
   @override

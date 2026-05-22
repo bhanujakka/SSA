@@ -75,13 +75,13 @@ class DashboardQuickActionsFab extends StatelessWidget {
     Navigator.of(context).pop();
     switch (action) {
       case _QuickAction.addStudent:
-        Navigator.of(context).pushNamed('/vtp-manager/students');
+        Navigator.of(context).pushNamed('/vt-instructor/students');
         break;
       case _QuickAction.markAttendance:
-        Navigator.of(context).pushNamed('/vtp-manager/attendance');
+        Navigator.of(context).pushNamed('/vt-instructor/attendance');
         break;
       case _QuickAction.scheduleLecture:
-        Navigator.of(context).pushNamed('/vtp-manager/schedule-lecture');
+        Navigator.of(context).pushNamed('/vt-instructor/schedule-lecture');
         break;
     }
   }
@@ -227,4 +227,8 @@ class _QuickActionTile extends StatelessWidget {
   }
 }
 
-enum _QuickAction { addStudent, markAttendance, scheduleLecture }
+enum _QuickAction {
+  addStudent,
+  markAttendance,
+  scheduleLecture,
+}

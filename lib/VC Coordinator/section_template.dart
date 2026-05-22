@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'appbar.dart';
 import 'dashboard_colors.dart';
@@ -22,20 +22,27 @@ class SectionTemplatePage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
+          backgroundColor: DashboardColors.pageSurface(context),
           drawer: isMobile
-              ? Drawer(child: DashboardSidebar(activeItem: activeItem, showCollapseButton: false))
+              ? Drawer(
+                  child: DashboardSidebar(
+                    activeItem: activeItem,
+                    showCollapseButton: false,
+                  ),
+                )
               : null,
           body: SafeArea(
             child: Row(
               children: [
-                if (!isMobile)
-                  DashboardSidebarHost(activeItem: activeItem),
+                if (!isMobile) DashboardSidebarHost(activeItem: activeItem),
                 Expanded(
                   child: Column(
                     children: [
                       DashboardTopBar(isMobile: isMobile),
-                      const Divider(height: 1, color: DashboardColors.border),
+                      Divider(
+                        height: 1,
+                        color: DashboardColors.borderFor(context),
+                      ),
                       Expanded(
                         child: SingleChildScrollView(
                           padding: EdgeInsets.fromLTRB(
@@ -49,8 +56,8 @@ class SectionTemplatePage extends StatelessWidget {
                             children: [
                               Text(
                                 title,
-                                style: const TextStyle(
-                                  color: DashboardColors.text,
+                                style: TextStyle(
+                                  color: DashboardColors.textFor(context),
                                   fontSize: 24,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -58,8 +65,8 @@ class SectionTemplatePage extends StatelessWidget {
                               const SizedBox(height: 6),
                               Text(
                                 subtitle,
-                                style: const TextStyle(
-                                  color: DashboardColors.text,
+                                style: TextStyle(
+                                  color: DashboardColors.mutedTextFor(context),
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -69,17 +76,17 @@ class SectionTemplatePage extends StatelessWidget {
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(28),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: DashboardColors.cardSurface(context),
                                   borderRadius: BorderRadius.circular(18),
                                   border: Border.all(
-                                    color: DashboardColors.border,
+                                    color: DashboardColors.borderFor(context),
                                     width: 2,
                                   ),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Content area',
                                   style: TextStyle(
-                                    color: DashboardColors.text,
+                                    color: DashboardColors.textFor(context),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),

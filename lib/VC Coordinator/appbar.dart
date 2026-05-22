@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dashboard_colors.dart';
 
 class DashboardTopBar extends StatelessWidget {
@@ -188,7 +188,7 @@ class DashboardTopBar extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'VTP Manager',
+                        'VC Coordinator',
                         style: TextStyle(
                           color: Color(0xFF355776),
                           fontSize: 9.5,
@@ -260,4 +260,3 @@ class _CircleButton extends StatelessWidget {
     return Tooltip(message: tooltip!, child: button);
   }
 }
-

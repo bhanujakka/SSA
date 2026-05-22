@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'appbar.dart';
@@ -15,11 +15,9 @@ class StudentsPage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
+          backgroundColor: DashboardColors.pageSurface(context),
           drawer: isMobile
-              ? const Drawer(
-                  child: DashboardSidebar(activeItem: 'Students', showCollapseButton: false),
-                )
+              ? const Drawer(child: DashboardSidebar(activeItem: 'Students', showCollapseButton: false))
               : null,
           body: SafeArea(
             child: Row(
@@ -174,7 +172,10 @@ class _StudentsBodyState extends State<_StudentsBody> {
                 initialValue: selectedStatus,
                 decoration: const InputDecoration(labelText: 'Status'),
                 items: const [
-                  DropdownMenuItem(value: _StatusFilter.all, child: Text('All')),
+                  DropdownMenuItem(
+                    value: _StatusFilter.all,
+                    child: Text('All'),
+                  ),
                   DropdownMenuItem(
                     value: _StatusFilter.active,
                     child: Text('Active'),
@@ -205,7 +206,8 @@ class _StudentsBodyState extends State<_StudentsBody> {
                     ),
                   ),
                 ],
-                onChanged: (value) => setDialogState(() => selectedCourse = value),
+                onChanged: (value) =>
+                    setDialogState(() => selectedCourse = value),
               ),
             ],
           ),
@@ -285,9 +287,9 @@ class _StudentsBodyState extends State<_StudentsBody> {
       _allStudents.insert(0, student);
       _currentPage = 1;
     });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Student added successfully.')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Student added successfully.')),
+    );
   }
 
   void _viewStudentDetails(_StudentItem student) {
@@ -304,7 +306,9 @@ class _StudentsBodyState extends State<_StudentsBody> {
         student: student,
         onSave: (updatedStudent) {
           setState(() {
-            final index = _allStudents.indexWhere((item) => item.rollNo == student.rollNo);
+            final index = _allStudents.indexWhere(
+              (item) => item.rollNo == student.rollNo,
+            );
             if (index != -1) {
               _allStudents[index] = updatedStudent;
             }
@@ -325,7 +329,9 @@ class _StudentsBodyState extends State<_StudentsBody> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Student'),
-        content: Text('Are you sure you want to delete ${student.name}? This action cannot be undone.'),
+        content: Text(
+          'Are you sure you want to delete ${student.name}? This action cannot be undone.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -346,7 +352,9 @@ class _StudentsBodyState extends State<_StudentsBody> {
               });
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${student.name} deleted successfully.')),
+                SnackBar(
+                  content: Text('${student.name} deleted successfully.'),
+                ),
               );
             },
             child: const Text('Delete'),
@@ -368,7 +376,7 @@ class _StudentsBodyState extends State<_StudentsBody> {
             Column(
               children: [
                 DashboardTopBar(isMobile: isMobile),
-                const Divider(height: 1, color: DashboardColors.border),
+                Divider(height: 1, color: DashboardColors.borderFor(context)),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(
@@ -416,7 +424,9 @@ class _StudentsBodyState extends State<_StudentsBody> {
                               ),
                               child: Container(
                                 height: 54,
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
                                     begin: Alignment.centerLeft,
@@ -464,11 +474,7 @@ class _StudentsBodyState extends State<_StudentsBody> {
                               );
                             }
                             return Row(
-                              children: [
-                                titleBlock,
-                                const Spacer(),
-                                addButton,
-                              ],
+                              children: [titleBlock, const Spacer(), addButton],
                             );
                           },
                         ),
@@ -515,11 +521,7 @@ class _StudentsBodyState extends State<_StudentsBody> {
                 ),
               ],
             ),
-            const Positioned(
-              right: 24,
-              bottom: 36,
-              child: _FloatingPlus(),
-            ),
+            const Positioned(right: 24, bottom: 36, child: _FloatingPlus()),
           ],
         );
       },
@@ -701,9 +703,7 @@ class _AddStudentSectionState extends State<_AddStudentSection> {
                     controller: _dobController,
                     readOnly: true,
                     onTap: _pickDob,
-                    decoration: _fieldDecoration(
-                      'dd-mm-yyyy',
-                    ).copyWith(
+                    decoration: _fieldDecoration('dd-mm-yyyy').copyWith(
                       suffixIcon: const Icon(Icons.calendar_today_outlined),
                     ),
                   ),
@@ -952,7 +952,8 @@ class _AddStudentSectionState extends State<_AddStudentSection> {
 
   void _saveDraft() {
     // Basic validation for draft save
-    final hasAnyData = _firstNameController.text.isNotEmpty ||
+    final hasAnyData =
+        _firstNameController.text.isNotEmpty ||
         _lastNameController.text.isNotEmpty ||
         _rollNoController.text.isNotEmpty ||
         _schoolController.text.isNotEmpty ||
@@ -1135,9 +1136,7 @@ class _AccordionSectionState extends State<_AccordionSection> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          children: [
-            widget.child,
-          ],
+          children: [widget.child],
         ),
       ),
     );
@@ -1326,10 +1325,7 @@ class _ActionButton extends StatelessWidget {
 }
 
 class _DetailRow extends StatelessWidget {
-  const _DetailRow({
-    required this.label,
-    required this.value,
-  });
+  const _DetailRow({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -1354,9 +1350,7 @@ class _DetailRow extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                color: DashboardColors.text,
-              ),
+              style: const TextStyle(color: DashboardColors.text),
             ),
           ),
         ],
@@ -1396,7 +1390,10 @@ class _ViewStudentDialog extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close_rounded, color: DashboardColors.text),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: DashboardColors.text,
+                    ),
                   ),
                 ],
               ),
@@ -1407,7 +1404,10 @@ class _ViewStudentDialog extends StatelessWidget {
               _DetailRow(label: 'School', value: student.school),
               _DetailRow(label: 'Course', value: student.course),
               _DetailRow(label: 'Attendance', value: '${student.attendance}%'),
-              _DetailRow(label: 'Status', value: student.isActive ? 'Active' : 'Inactive'),
+              _DetailRow(
+                label: 'Status',
+                value: student.isActive ? 'Active' : 'Inactive',
+              ),
             ],
           ),
         ),
@@ -1417,10 +1417,7 @@ class _ViewStudentDialog extends StatelessWidget {
 }
 
 class _EditStudentDialog extends StatefulWidget {
-  const _EditStudentDialog({
-    required this.student,
-    required this.onSave,
-  });
+  const _EditStudentDialog({required this.student, required this.onSave});
 
   final _StudentItem student;
   final ValueChanged<_StudentItem> onSave;
@@ -1444,7 +1441,9 @@ class _EditStudentDialogState extends State<_EditStudentDialog> {
     _nameController = TextEditingController(text: widget.student.name);
     _schoolController = TextEditingController(text: widget.student.school);
     _courseController = TextEditingController(text: widget.student.course);
-    _attendanceController = TextEditingController(text: widget.student.attendance.toString());
+    _attendanceController = TextEditingController(
+      text: widget.student.attendance.toString(),
+    );
     _isActive = widget.student.isActive;
   }
 
@@ -1485,30 +1484,21 @@ class _EditStudentDialogState extends State<_EditStudentDialog> {
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close_rounded, color: DashboardColors.text),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: DashboardColors.text,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
-                _EditField(
-                  label: 'Roll No',
-                  controller: _rollNoController,
-                ),
+                _EditField(label: 'Roll No', controller: _rollNoController),
                 const SizedBox(height: 12),
-                _EditField(
-                  label: 'Name',
-                  controller: _nameController,
-                ),
+                _EditField(label: 'Name', controller: _nameController),
                 const SizedBox(height: 12),
-                _EditField(
-                  label: 'School',
-                  controller: _schoolController,
-                ),
+                _EditField(label: 'School', controller: _schoolController),
                 const SizedBox(height: 12),
-                _EditField(
-                  label: 'Course',
-                  controller: _courseController,
-                ),
+                _EditField(label: 'Course', controller: _courseController),
                 const SizedBox(height: 12),
                 _EditField(
                   label: 'Attendance (%)',
@@ -1532,7 +1522,10 @@ class _EditStudentDialogState extends State<_EditStudentDialog> {
                         decoration: _editFieldDecoration('Select status'),
                         items: const [
                           DropdownMenuItem(value: true, child: Text('Active')),
-                          DropdownMenuItem(value: false, child: Text('Inactive')),
+                          DropdownMenuItem(
+                            value: false,
+                            child: Text('Inactive'),
+                          ),
                         ],
                         onChanged: (value) {
                           if (value == null) return;
@@ -1608,14 +1601,7 @@ class _EditStudentDialogState extends State<_EditStudentDialog> {
     }
 
     widget.onSave(
-      _StudentItem(
-        rollNo,
-        name,
-        school,
-        course,
-        attendance,
-        _isActive,
-      ),
+      _StudentItem(rollNo, name, school, course, attendance, _isActive),
     );
     Navigator.pop(context);
   }
@@ -1665,14 +1651,23 @@ class _EditField extends StatelessWidget {
           keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: 'Enter $label',
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 10,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFB8C3E6), width: 1.3),
+              borderSide: const BorderSide(
+                color: Color(0xFFB8C3E6),
+                width: 1.3,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF2552C2), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFF2552C2),
+                width: 1.5,
+              ),
             ),
           ),
         ),
@@ -1793,46 +1788,46 @@ class _StudentTableCard extends StatelessWidget {
                       ),
                     ),
                     ...students.asMap().entries.map(
-                          (entry) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
-                            decoration: BoxDecoration(
-                              border: entry.key == students.length - 1
-                                  ? null
-                                  : const Border(
-                                      bottom: BorderSide(
-                                        color: DashboardColors.border,
-                                        width: 1.2,
-                                      ),
-                                    ),
-                            ),
-                            child: Row(
-                              children: [
-                                _BodyCell(entry.value.rollNo, flex: 8),
-                                _BodyCell(entry.value.name, flex: 10, isBold: true),
-                                _BodyCell(entry.value.school, flex: 12),
-                                _BodyCell(entry.value.course, flex: 10),
-                                _AttendanceCell(
-                                  percent: entry.value.attendance,
-                                  flex: 8,
-                                ),
-                                _StatusCell(
-                                  isActive: entry.value.isActive,
-                                  flex: 6,
-                                ),
-                                _ActionCell(
-                                  flex: 10,
-                                  student: entry.value,
-                                  onView: () => onViewStudent(entry.value),
-                                  onEdit: () => onEditStudent(entry.value),
-                                  onDelete: () => onDeleteStudent(entry.value),
-                                ),
-                              ],
-                            ),
-                          ),
+                      (entry) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
                         ),
+                        decoration: BoxDecoration(
+                          border: entry.key == students.length - 1
+                              ? null
+                              : const Border(
+                                  bottom: BorderSide(
+                                    color: DashboardColors.border,
+                                    width: 1.2,
+                                  ),
+                                ),
+                        ),
+                        child: Row(
+                          children: [
+                            _BodyCell(entry.value.rollNo, flex: 8),
+                            _BodyCell(entry.value.name, flex: 10, isBold: true),
+                            _BodyCell(entry.value.school, flex: 12),
+                            _BodyCell(entry.value.course, flex: 10),
+                            _AttendanceCell(
+                              percent: entry.value.attendance,
+                              flex: 8,
+                            ),
+                            _StatusCell(
+                              isActive: entry.value.isActive,
+                              flex: 6,
+                            ),
+                            _ActionCell(
+                              flex: 10,
+                              student: entry.value,
+                              onView: () => onViewStudent(entry.value),
+                              onEdit: () => onEditStudent(entry.value),
+                              onDelete: () => onDeleteStudent(entry.value),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -2161,7 +2156,11 @@ class _ActionCell extends StatelessWidget {
           IconButton(
             constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             padding: EdgeInsets.zero,
-            icon: const Icon(Icons.remove_red_eye_outlined, color: DashboardColors.red, size: 18),
+            icon: const Icon(
+              Icons.remove_red_eye_outlined,
+              color: DashboardColors.red,
+              size: 18,
+            ),
             onPressed: onView,
             tooltip: 'View Student Details',
           ),
@@ -2169,7 +2168,11 @@ class _ActionCell extends StatelessWidget {
           IconButton(
             constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             padding: EdgeInsets.zero,
-            icon: const Icon(Icons.edit_outlined, color: Color(0xFF2D65D7), size: 18),
+            icon: const Icon(
+              Icons.edit_outlined,
+              color: Color(0xFF2D65D7),
+              size: 18,
+            ),
             onPressed: onEdit,
             tooltip: 'Edit Student',
           ),
@@ -2177,7 +2180,11 @@ class _ActionCell extends StatelessWidget {
           IconButton(
             constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             padding: EdgeInsets.zero,
-            icon: const Icon(Icons.delete_outline_rounded, color: DashboardColors.red, size: 18),
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              color: DashboardColors.red,
+              size: 18,
+            ),
             onPressed: onDelete,
             tooltip: 'Delete Student',
           ),
@@ -2461,7 +2468,10 @@ class _AddStudentDialogState extends State<_AddStudentDialog> {
   Widget build(BuildContext context) {
     final compact = MediaQuery.of(context).size.width < 920;
     return Dialog(
-      insetPadding: EdgeInsets.symmetric(horizontal: compact ? 10 : 24, vertical: 16),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: compact ? 10 : 24,
+        vertical: 16,
+      ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 860, maxHeight: 760),
@@ -2497,7 +2507,10 @@ class _AddStudentDialogState extends State<_AddStudentDialog> {
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close_rounded, color: DashboardColors.text),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: DashboardColors.text,
+                    ),
                   ),
                 ],
               ),
@@ -2541,34 +2554,41 @@ class _AddStudentDialogState extends State<_AddStudentDialog> {
                     onTap: () {
                       final rollNo =
                           _textControllers[_fieldKey(
-                            'Academic Details',
-                            'Roll No',
-                          )]?.text
+                                'Academic Details',
+                                'Roll No',
+                              )]
+                              ?.text
                               .trim() ??
                           '';
                       final firstName =
                           _textControllers[_fieldKey(
-                            'Personal Details',
-                            'First Name',
-                          )]?.text
+                                'Personal Details',
+                                'First Name',
+                              )]
+                              ?.text
                               .trim() ??
                           '';
                       final middleName =
                           _textControllers[_fieldKey(
-                            'Personal Details',
-                            'Middle Name',
-                          )]?.text
+                                'Personal Details',
+                                'Middle Name',
+                              )]
+                              ?.text
                               .trim() ??
                           '';
                       final lastName =
                           _textControllers[_fieldKey(
-                            'Personal Details',
-                            'Last Name',
-                          )]?.text
+                                'Personal Details',
+                                'Last Name',
+                              )]
+                              ?.text
                               .trim() ??
                           '';
                       final school =
-                          _dropdownValues[_fieldKey('Academic Details', 'School')] ??
+                          _dropdownValues[_fieldKey(
+                            'Academic Details',
+                            'School',
+                          )] ??
                           '-';
                       final stream =
                           _dropdownValues[_fieldKey(
@@ -2577,7 +2597,9 @@ class _AddStudentDialogState extends State<_AddStudentDialog> {
                           )] ??
                           '-';
 
-                      if (rollNo.isEmpty || firstName.isEmpty || school == '-') {
+                      if (rollNo.isEmpty ||
+                          firstName.isEmpty ||
+                          school == '-') {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -2588,19 +2610,14 @@ class _AddStudentDialogState extends State<_AddStudentDialog> {
                         return;
                       }
 
-                      final fullName = [firstName, middleName, lastName]
-                          .where((part) => part.isNotEmpty)
-                          .join(' ');
+                      final fullName = [
+                        firstName,
+                        middleName,
+                        lastName,
+                      ].where((part) => part.isNotEmpty).join(' ');
 
                       widget.onAddStudent(
-                        _StudentItem(
-                          rollNo,
-                          fullName,
-                          school,
-                          stream,
-                          0,
-                          true,
-                        ),
+                        _StudentItem(rollNo, fullName, school, stream, 0, true),
                       );
                       Navigator.pop(context);
                     },
@@ -2636,12 +2653,20 @@ class _AddStudentDialogState extends State<_AddStudentDialog> {
                           onPressed: () => Navigator.pop(context),
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(96, 48),
-                            side: const BorderSide(color: Color(0xFFD9DFF0), width: 1.3),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            side: const BorderSide(
+                              color: Color(0xFFD9DFF0),
+                              width: 1.3,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
                           child: const Text(
                             'Cancel',
-                            style: TextStyle(color: DashboardColors.text, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                              color: DashboardColors.text,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -2656,12 +2681,20 @@ class _AddStudentDialogState extends State<_AddStudentDialog> {
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(96, 48),
-                          side: const BorderSide(color: Color(0xFFD9DFF0), width: 1.3),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          side: const BorderSide(
+                            color: Color(0xFFD9DFF0),
+                            width: 1.3,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: const Text(
                           'Cancel',
-                          style: TextStyle(color: DashboardColors.text, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                            color: DashboardColors.text,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -2754,11 +2787,13 @@ class _StudentAccordionSection extends StatelessWidget {
                             label: field.label,
                             kind: field.kind,
                             value: values[_fieldKey(title, field.label)],
-                            controller: textControllers[_fieldKey(title, field.label)],
+                            controller:
+                                textControllers[_fieldKey(title, field.label)],
                             options: field.options ?? const [],
                             onChanged: (val) =>
                                 onChanged(_fieldKey(title, field.label), val),
-                            onDateTap: () => onDateTap(_fieldKey(title, field.label)),
+                            onDateTap: () =>
+                                onDateTap(_fieldKey(title, field.label)),
                           ),
                         ),
                       )
@@ -2832,13 +2867,14 @@ class _StudentField extends StatelessWidget {
             controller: controller,
             readOnly: kind == _FieldKind.date,
             onTap: kind == _FieldKind.date ? onDateTap : null,
-            decoration: _inputDecoration(
-              kind == _FieldKind.date ? 'dd-mm-yyyy' : 'Enter $label',
-            ).copyWith(
-              suffixIcon: kind == _FieldKind.date
-                  ? const Icon(Icons.calendar_today_outlined, size: 18)
-                  : null,
-            ),
+            decoration:
+                _inputDecoration(
+                  kind == _FieldKind.date ? 'dd-mm-yyyy' : 'Enter $label',
+                ).copyWith(
+                  suffixIcon: kind == _FieldKind.date
+                      ? const Icon(Icons.calendar_today_outlined, size: 18)
+                      : null,
+                ),
           ),
       ],
     );
@@ -2847,7 +2883,10 @@ class _StudentField extends StatelessWidget {
   InputDecoration _inputDecoration(String hint) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Color(0xFF6B7280), fontWeight: FontWeight.w500),
+      hintStyle: const TextStyle(
+        color: Color(0xFF6B7280),
+        fontWeight: FontWeight.w500,
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
@@ -2869,11 +2908,7 @@ class _FormSectionDef {
 }
 
 class _FieldDef {
-  const _FieldDef({
-    required this.label,
-    required this.kind,
-    this.options,
-  });
+  const _FieldDef({required this.label, required this.kind, this.options});
 
   final String label;
   final _FieldKind kind;
@@ -2883,5 +2918,3 @@ class _FieldDef {
 enum _FieldKind { text, dropdown, date }
 
 String _fieldKey(String section, String label) => '$section::$label';
-
-

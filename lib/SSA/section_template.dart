@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'appbar.dart';
 import 'dashboard_colors.dart';
@@ -24,13 +24,17 @@ class SectionTemplatePage extends StatelessWidget {
         return Scaffold(
           backgroundColor: DashboardColors.surface,
           drawer: isMobile
-              ? Drawer(child: DashboardSidebar(activeItem: activeItem, showCollapseButton: false))
+              ? Drawer(
+                  child: DashboardSidebar(
+                    activeItem: activeItem,
+                    showCollapseButton: false,
+                  ),
+                )
               : null,
           body: SafeArea(
             child: Row(
               children: [
-                if (!isMobile)
-                  DashboardSidebarHost(activeItem: activeItem),
+                if (!isMobile) DashboardSidebarHost(activeItem: activeItem),
                 Expanded(
                   child: Column(
                     children: [

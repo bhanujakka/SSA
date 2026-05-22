@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'appbar.dart';
 import 'bill_download_service.dart'
@@ -17,11 +17,9 @@ class ReportsPage extends StatelessWidget {
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 980;
         return Scaffold(
-          backgroundColor: DashboardColors.surface,
+          backgroundColor: DashboardColors.pageSurface(context),
           drawer: isMobile
-              ? const Drawer(
-                  child: DashboardSidebar(activeItem: 'Reports', showCollapseButton: false),
-                )
+              ? const Drawer(child: DashboardSidebar(activeItem: 'Reports', showCollapseButton: false))
               : null,
           body: SafeArea(
             child: Row(
@@ -68,16 +66,23 @@ class _ReportsBody extends StatelessWidget {
     return value.replaceAll(RegExp(r'[\\/:*?"<>|\s]+'), '_').toLowerCase();
   }
 
-  static Future<void> _downloadReport(BuildContext context, _RecentReport item) async {
+  static Future<void> _downloadReport(
+    BuildContext context,
+    _RecentReport item,
+  ) async {
     try {
       final fileName = '${_safeFilePart(item.title)}.txt';
-      final content = '''
+      final content =
+          '''
 REPORT
 Title: ${item.title}
 Details: ${item.subtitle}
 Generated On: ${DateTime.now()}
 ''';
-      final savedLocation = await downloadBillFile(fileName: fileName, content: content);
+      final savedLocation = await downloadBillFile(
+        fileName: fileName,
+        content: content,
+      );
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -109,7 +114,7 @@ Generated On: ${DateTime.now()}
             Column(
               children: [
                 DashboardTopBar(isMobile: isMobile),
-                const Divider(height: 1, color: DashboardColors.border),
+                Divider(height: 1, color: DashboardColors.borderFor(context)),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(
@@ -152,11 +157,7 @@ Generated On: ${DateTime.now()}
                 ),
               ],
             ),
-            const Positioned(
-              right: 24,
-              bottom: 36,
-              child: _FloatingPlus(),
-            ),
+            const Positioned(right: 24, bottom: 36, child: _FloatingPlus()),
           ],
         );
       },
@@ -242,10 +243,7 @@ class _GeneratorCard extends StatelessWidget {
 }
 
 class _RecentReportsCard extends StatelessWidget {
-  const _RecentReportsCard({
-    required this.items,
-    required this.onDownload,
-  });
+  const _RecentReportsCard({required this.items, required this.onDownload});
 
   final List<_RecentReport> items;
   final void Function(_RecentReport item) onDownload;
@@ -282,7 +280,12 @@ class _RecentReportsCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
               child: Column(
                 children: items
-                    .map((item) => _RecentReportRow(item: item, onDownload: () => onDownload(item)))
+                    .map(
+                      (item) => _RecentReportRow(
+                        item: item,
+                        onDownload: () => onDownload(item),
+                      ),
+                    )
                     .toList(),
               ),
             ),
@@ -294,10 +297,7 @@ class _RecentReportsCard extends StatelessWidget {
 }
 
 class _RecentReportRow extends StatelessWidget {
-  const _RecentReportRow({
-    required this.item,
-    required this.onDownload,
-  });
+  const _RecentReportRow({required this.item, required this.onDownload});
 
   final _RecentReport item;
   final VoidCallback onDownload;
@@ -404,7 +404,11 @@ class _DownloadButton extends StatelessWidget {
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.download_rounded, color: DashboardColors.red, size: 21),
+              Icon(
+                Icons.download_rounded,
+                color: DashboardColors.red,
+                size: 21,
+              ),
               SizedBox(width: 8),
               Text(
                 'Download',
@@ -442,4 +446,3 @@ class _RecentReport {
   final String subtitle;
   final IconData icon;
 }
-
