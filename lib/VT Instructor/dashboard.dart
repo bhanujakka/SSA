@@ -161,71 +161,71 @@ class _HeroBanner extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Wrap(
-                        spacing: 14,
-                        runSpacing: 12,
-                        children: [
-                          InkWell(
-                            borderRadius: BorderRadius.circular(18),
-                            onTap: () => Navigator.pushReplacementNamed(context, '/reports'),
-                            child: Container(
-                              height: 54,
-                              padding: const EdgeInsets.symmetric(horizontal: 28),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'View Reports',
-                                    style: TextStyle(
-                                      color: DashboardColors.red,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Icon(
-                                    Icons.arrow_forward_rounded,
-                                    size: 18,
-                                    color: DashboardColors.red,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            borderRadius: BorderRadius.circular(18),
-                            onTap: () => Navigator.pushReplacementNamed(context, '/vt-management'),
-                            child: Container(
-                              height: 54,
-                              padding: const EdgeInsets.symmetric(horizontal: 24),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: const Color(0x60FFFFFF), width: 2),
-                                borderRadius: BorderRadius.circular(18),
-                                color: const Color(0x25FFFFFF),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.add, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Add VTP',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      // Wrap(
+                      //   spacing: 14,
+                      //   runSpacing: 12,
+                      //   children: [
+                      //     InkWell(
+                      //       borderRadius: BorderRadius.circular(18),
+                      //       onTap: () => Navigator.pushReplacementNamed(context, '/reports'),
+                      //       child: Container(
+                      //         height: 54,
+                      //         padding: const EdgeInsets.symmetric(horizontal: 28),
+                      //         decoration: BoxDecoration(
+                      //           color: Colors.white,
+                      //           borderRadius: BorderRadius.circular(18),
+                      //         ),
+                      //         child: const Row(
+                      //           mainAxisSize: MainAxisSize.min,
+                      //           children: [
+                      //             Text(
+                      //               'View Reports',
+                      //               style: TextStyle(
+                      //                 color: DashboardColors.red,
+                      //                 fontSize: 15,
+                      //                 fontWeight: FontWeight.w700,
+                      //               ),
+                      //             ),
+                      //             SizedBox(width: 10),
+                      //             Icon(
+                      //               Icons.arrow_forward_rounded,
+                      //               size: 18,
+                      //               color: DashboardColors.red,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     InkWell(
+                      //       borderRadius: BorderRadius.circular(18),
+                      //       onTap: () => Navigator.pushReplacementNamed(context, '/vt-management'),
+                      //       child: Container(
+                      //         height: 54,
+                      //         padding: const EdgeInsets.symmetric(horizontal: 24),
+                      //         decoration: BoxDecoration(
+                      //           border: Border.all(color: const Color(0x60FFFFFF), width: 2),
+                      //           borderRadius: BorderRadius.circular(18),
+                      //           color: const Color(0x25FFFFFF),
+                      //         ),
+                      //         child: const Row(
+                      //           mainAxisSize: MainAxisSize.min,
+                      //           children: [
+                      //             Icon(Icons.add, color: Colors.white),
+                      //             SizedBox(width: 8),
+                      //             Text(
+                      //               'Add VTP',
+                      //               style: TextStyle(
+                      //                 color: Colors.white,
+                      //                 fontSize: 15,
+                      //                 fontWeight: FontWeight.w700,
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),

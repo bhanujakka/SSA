@@ -194,42 +194,42 @@ class _HeroBanner extends StatelessWidget {
                               ),
                             ),
                           ),
-                          InkWell(
-                            borderRadius: BorderRadius.circular(18),
-                            onTap: () => Navigator.pushReplacementNamed(
-                              context,
-                              '/vc-coordinator/vt-management',
-                            ),
-                            child: Container(
-                              height: 54,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: const Color(0x60FFFFFF),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(18),
-                                color: const Color(0x25FFFFFF),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.add, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Add VTP',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          // InkWell(
+                          //   borderRadius: BorderRadius.circular(18),
+                          //   onTap: () => Navigator.pushReplacementNamed(
+                          //     context,
+                          //     '/vc-coordinator/vt-management',
+                          //   ),
+                          //   child: Container(
+                          //     height: 54,
+                          //     padding: const EdgeInsets.symmetric(
+                          //       horizontal: 24,
+                          //     ),
+                          //     decoration: BoxDecoration(
+                          //       border: Border.all(
+                          //         color: const Color(0x60FFFFFF),
+                          //         width: 2,
+                          //       ),
+                          //       borderRadius: BorderRadius.circular(18),
+                          //       color: const Color(0x25FFFFFF),
+                          //     ),
+                          //     child: const Row(
+                          //       mainAxisSize: MainAxisSize.min,
+                          //       children: [
+                          //         Icon(Icons.add, color: Colors.white),
+                          //         SizedBox(width: 8),
+                          //         Text(
+                          //           'Add VTP',
+                          //           style: TextStyle(
+                          //             color: Colors.white,
+                          //             fontSize: 15,
+                          //             fontWeight: FontWeight.w700,
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
