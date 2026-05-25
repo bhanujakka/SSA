@@ -10,7 +10,7 @@ import 'SSA/schedulelecture.dart' as ssa_schedulelecture;
 import 'SSA/vcmanagement.dart' as ssa_vcmanagement;
 import 'SSA/vtmanagement.dart' as ssa_vtmanagement;
 import 'SSA/vtpmanagement.dart' as ssa_vtpmanagement;
-import 'SSA/students_route.dart' as ssa_students;
+import 'SSA/ssa_students.dart' as ssa_students;
 import 'VC Coordinator/attendance.dart' as vc_coordinator_attendance;
 import 'VC Coordinator/billing.dart' as vc_coordinator_billing;
 import 'VC Coordinator/dashboard.dart' as vc_coordinator_dashboard;
