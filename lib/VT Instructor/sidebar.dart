@@ -94,12 +94,17 @@ class DashboardSidebar extends StatefulWidget {
       Icons.app_registration_outlined,
       '/vt-instructor/teaching-register'
     ),
-    // (
-    //   'Schedule Lecture',
-    //   Icons.event_note_outlined,
-    //   '/vt-instructor/schedule-lecture'
-    // ),
     ('Lesson Plan', Icons.event_available_outlined, '/vt-instructor/lesson-plan'),
+    (
+      'Guest Lecture',
+      Icons.record_voice_over_outlined,
+      '/vt-instructor/schedule-lecture'
+    ),
+    (
+      'Industrial Visit',
+      Icons.factory_outlined,
+      '/vt-instructor/industrial-visit'
+    ),
     ('My Profile', Icons.person_outline_rounded, '/vt-instructor/my-profile'),
   ];
 

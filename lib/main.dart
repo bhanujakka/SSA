@@ -31,6 +31,7 @@ import 'VT Instructor/dashboard.dart' as vt_instructor;
 import 'VT Instructor/exams_marks.dart' as vt_instructor_exams_marks;
 import 'VT Instructor/exit_survey.dart' as vt_instructor_exir_survey;
 import 'VT Instructor/internships.dart' as vt_instructor_internships;
+import 'VT Instructor/industrialvisit.dart' as vt_instructor_industrial_visit;
 import 'VT Instructor/lesson_plan.dart' as vt_instructor_lesson_plan;
 import 'VT Instructor/my_profile.dart' as vt_instructor_my_profile;
 import 'VT Instructor/parent_teacher_meeting.dart'
@@ -134,6 +135,8 @@ class MyApp extends StatelessWidget {
                 .ParentTeacherMeetingPage(),
         '/vt-instructor/internships': (context) =>
             const vt_instructor_internships.InternshipsPage(),
+        '/vt-instructor/industrial-visit': (context) =>
+            const vt_instructor_industrial_visit.IndustrialVisitPage(),
         '/vt-instructor/exam-marks': (context) =>
             const vt_instructor_exams_marks.ExamsMarksPage(),
         '/vt-instructor/exams-marks': (context) =>

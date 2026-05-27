@@ -245,20 +245,6 @@ class _StatsSection extends StatelessWidget {
 
   static const List<_StatItem> _stats = [
     _StatItem(
-      title: 'PM Schools',
-      value: '856',
-      badge: '+8.5%',
-      icon: Icons.account_balance_outlined,
-      tileGradient: [Color(0xFF2552C2), Color(0xFF1F43A3)],
-    ),
-    _StatItem(
-      title: 'SS Schools',
-      value: '391',
-      badge: '+4.2%',
-      icon: Icons.account_balance_outlined,
-      tileGradient: [Color(0xFF2D65D7), Color(0xFF1F43A3)],
-    ),
-    _StatItem(
       title: 'Total VTPs',
       value: '124',
       badge: '+6.3%',

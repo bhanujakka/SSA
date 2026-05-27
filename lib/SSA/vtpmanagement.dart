@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'appbar.dart';
@@ -52,6 +53,7 @@ class _VTPBodyState extends State<_VTPBody> {
       code: 'VTP001',
       pan: 'ABCDE1234F',
       tan: 'DELM12345A',
+      address: 'New Delhi, Delhi - 110001',
       email: 'techskill@vtp.com',
       mobile: '+91 98765 43210',
       vtCount: 89,
@@ -63,6 +65,7 @@ class _VTPBodyState extends State<_VTPBody> {
       code: 'VTP002',
       pan: 'FGHIJ5678K',
       tan: 'MUMH67890B',
+      address: 'Mumbai, Maharashtra - 400001',
       email: 'voctraining@vtp.com',
       mobile: '+91 97654 32109',
       vtCount: 67,
@@ -74,6 +77,7 @@ class _VTPBodyState extends State<_VTPBody> {
       code: 'VTP003',
       pan: 'LMNOP9012Q',
       tan: 'BANG23456C',
+      address: 'Bengaluru, Karnataka - 560001',
       email: 'skillindia@vtp.com',
       mobile: '+91 96543 21098',
       vtCount: 54,
@@ -390,6 +394,8 @@ class _WideDetails extends StatelessWidget {
               const SizedBox(height: 10),
               const _InfoLabel('TAN:'),
               const SizedBox(height: 10),
+              const _InfoLabel('Address:'),
+              const SizedBox(height: 10),
               const _InfoLabel('Email:'),
               const SizedBox(height: 10),
               const _InfoLabel('Mobile:'),
@@ -404,6 +410,8 @@ class _WideDetails extends StatelessWidget {
             _InfoValue(item.pan),
             const SizedBox(height: 12),
             _InfoValue(item.tan),
+            const SizedBox(height: 12),
+            _InfoValue(item.address),
             const SizedBox(height: 12),
             _InfoValue(item.email),
             const SizedBox(height: 12),
@@ -461,6 +469,7 @@ class _CompactDetails extends StatelessWidget {
         const SizedBox(height: 18),
         _DetailLine(label: 'PAN:', value: item.pan),
         _DetailLine(label: 'TAN:', value: item.tan),
+        _DetailLine(label: 'Address:', value: item.address),
         _DetailLine(label: 'Email:', value: item.email),
         _DetailLine(label: 'Mobile:', value: item.mobile),
       ],
@@ -543,13 +552,17 @@ class _InfoValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      value,
-      textAlign: TextAlign.right,
-      style: const TextStyle(
-        color: DashboardColors.text,
-        fontSize: 14,
-        fontWeight: FontWeight.w700,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: Text(
+        value,
+        textAlign: TextAlign.right,
+        softWrap: true,
+        style: const TextStyle(
+          color: DashboardColors.text,
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
@@ -654,6 +667,7 @@ class _VTPItem {
     required this.code,
     required this.pan,
     required this.tan,
+    required this.address,
     required this.email,
     required this.mobile,
     required this.vtCount,
@@ -665,6 +679,7 @@ class _VTPItem {
   final String code;
   final String pan;
   final String tan;
+  final String address;
   final String email;
   final String mobile;
   final int vtCount;
@@ -677,6 +692,7 @@ class _VTPItem {
       code,
       pan,
       tan,
+      address,
       email,
       mobile,
       vtCount.toString(),
@@ -693,6 +709,7 @@ class _VTPItem {
         code: 'VTP000',
         pan: '-',
         tan: '-',
+        address: '-',
         email: '-',
         mobile: '-',
         vtCount: 0,
@@ -701,16 +718,32 @@ class _VTPItem {
       );
     }
 
+    if (p.length == 9) {
+      return _VTPItem(
+        name: p[0],
+        code: p[1],
+        pan: p[2],
+        tan: p[3],
+        address: '-',
+        email: p[4],
+        mobile: p[5],
+        vtCount: int.tryParse(p[6]) ?? 0,
+        schoolCount: int.tryParse(p[7]) ?? 0,
+        verified: p[8] == '1',
+      );
+    }
+
     return _VTPItem(
       name: p[0],
       code: p[1],
       pan: p[2],
       tan: p[3],
-      email: p[4],
-      mobile: p[5],
-      vtCount: int.tryParse(p[6]) ?? 0,
-      schoolCount: int.tryParse(p[7]) ?? 0,
-      verified: p[8] == '1',
+      address: p[4],
+      email: p[5],
+      mobile: p[6],
+      vtCount: int.tryParse(p[7]) ?? 0,
+      schoolCount: int.tryParse(p[8]) ?? 0,
+      verified: p[9] == '1',
     );
   }
 }
@@ -727,21 +760,20 @@ class _AddVTPDialog extends StatefulWidget {
 class _AddVTPDialogState extends State<_AddVTPDialog> {
   final _formKey = GlobalKey<FormState>();
   final _name = TextEditingController();
-  final _code = TextEditingController();
   final _pan = TextEditingController();
   final _tan = TextEditingController();
+  final _address = TextEditingController();
   final _email = TextEditingController();
   final _mobile = TextEditingController();
   final _vts = TextEditingController(text: '0');
   final _schools = TextEditingController(text: '0');
-  bool _verified = true;
 
   @override
   void dispose() {
     _name.dispose();
-    _code.dispose();
     _pan.dispose();
     _tan.dispose();
+    _address.dispose();
     _email.dispose();
     _mobile.dispose();
     _vts.dispose();
@@ -755,21 +787,36 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 760, maxHeight: 720),
+        constraints: const BoxConstraints(maxWidth: 540, maxHeight: 680),
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 18, 14),
+              padding: const EdgeInsets.fromLTRB(20, 18, 18, 16),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Expanded(
-                    child: Text(
-                      'Add New VTP',
-                      style: TextStyle(
-                        color: DashboardColors.text,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Add New VTP',
+                          style: TextStyle(
+                            color: DashboardColors.text,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Enter VTP organization details',
+                          style: TextStyle(
+                            color: Color(0xFF6B7280),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   IconButton(
@@ -785,69 +832,106 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
             const Divider(height: 1, color: DashboardColors.border),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
                 child: Form(
                   key: _formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      final compact = constraints.maxWidth < 560;
+                      final compact = constraints.maxWidth < 440;
                       return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          _Field(
+                            label: 'VTP Name *',
+                            hintText: 'Enter VTP organization name',
+                            controller: _name,
+                            validator: _nameValidator,
+                            textCapitalization: TextCapitalization.words,
+                          ),
+                          const SizedBox(height: 12),
                           _FormRow(
                             compact: compact,
                             left: _Field(
-                              label: 'VTP Name *',
-                              controller: _name,
+                              label: 'PAN Number *',
+                              hintText: 'ABCDE1234F',
+                              controller: _pan,
+                              validator: _panValidator,
+                              textCapitalization: TextCapitalization.characters,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp('[a-zA-Z0-9]'),
+                                ),
+                                LengthLimitingTextInputFormatter(10),
+                              ],
                             ),
-                            right: _Field(label: 'Code *', controller: _code),
+                            right: _Field(
+                              label: 'TAN Number *',
+                              hintText: 'DELM12345A',
+                              controller: _tan,
+                              validator: _tanValidator,
+                              textCapitalization: TextCapitalization.characters,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp('[a-zA-Z0-9]'),
+                                ),
+                                LengthLimitingTextInputFormatter(10),
+                              ],
+                            ),
                           ),
+                          _Field(
+                            label: 'Full Address *',
+                            hintText: 'Street, Area, City, State - Pincode',
+                            controller: _address,
+                            validator: _addressValidator,
+                            textCapitalization: TextCapitalization.words,
+                          ),
+                          const SizedBox(height: 12),
                           _FormRow(
                             compact: compact,
-                            left: _Field(label: 'PAN *', controller: _pan),
-                            right: _Field(label: 'TAN *', controller: _tan),
+                            left: _Field(
+                              label: 'Number of VTs *',
+                              hintText: '0',
+                              controller: _vts,
+                              keyboardType: TextInputType.number,
+                              validator: _numberValidator,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            ),
+                            right: _Field(
+                              label: 'Number of PM Schools *',
+                              hintText: '0',
+                              controller: _schools,
+                              keyboardType: TextInputType.number,
+                              validator: _numberValidator,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            ),
                           ),
                           _FormRow(
                             compact: compact,
                             left: _Field(
-                              label: 'Email *',
+                              label: 'Email ID *',
+                              hintText: 'contact@vtp.com',
                               controller: _email,
                               keyboardType: TextInputType.emailAddress,
                               validator: _emailValidator,
                             ),
                             right: _Field(
-                              label: 'Mobile *',
+                              label: 'Mobile Number *',
+                              hintText: '+91 XXXXX XXXXX',
                               controller: _mobile,
                               keyboardType: TextInputType.phone,
+                              validator: _mobileValidator,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp('[0-9+ ]'),
+                                ),
+                                LengthLimitingTextInputFormatter(16),
+                              ],
                             ),
-                          ),
-                          _FormRow(
-                            compact: compact,
-                            left: _Field(
-                              label: 'VTs *',
-                              controller: _vts,
-                              keyboardType: TextInputType.number,
-                              validator: _numberValidator,
-                            ),
-                            right: _Field(
-                              label: 'PM Schools *',
-                              controller: _schools,
-                              keyboardType: TextInputType.number,
-                              validator: _numberValidator,
-                            ),
-                          ),
-                          SwitchListTile(
-                            contentPadding: EdgeInsets.zero,
-                            value: _verified,
-                            activeThumbColor: DashboardColors.blue,
-                            title: const Text(
-                              'Verified',
-                              style: TextStyle(
-                                color: DashboardColors.text,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            onChanged: (value) =>
-                                setState(() => _verified = value),
                           ),
                         ],
                       );
@@ -856,9 +940,8 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
                 ),
               ),
             ),
-            const Divider(height: 1, color: DashboardColors.border),
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 14, 24, 18),
+              padding: const EdgeInsets.fromLTRB(20, 2, 20, 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -868,7 +951,7 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
                       minimumSize: const Size(104, 50),
                       side: const BorderSide(
                         color: DashboardColors.border,
-                        width: 1.6,
+                        width: 1.2,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -883,18 +966,19 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  ElevatedButton.icon(
+                  ElevatedButton(
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(120, 50),
+                      minimumSize: const Size(104, 50),
                       backgroundColor: DashboardColors.blue,
                       foregroundColor: Colors.white,
+                      elevation: 8,
+                      shadowColor: DashboardColors.blue.withValues(alpha: 0.28),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    icon: const Icon(Icons.add_rounded),
-                    label: const Text(
+                    child: const Text(
                       'Add VTP',
                       style: TextStyle(fontWeight: FontWeight.w700),
                     ),
@@ -909,7 +993,51 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
   }
 
   String? _required(String? value) {
-    return value == null || value.trim().isEmpty ? 'Required' : null;
+    return value == null || value.trim().isEmpty
+        ? 'This field is required'
+        : null;
+  }
+
+  String? _nameValidator(String? value) {
+    final required = _required(value);
+    if (required != null) return required;
+    final trimmed = value!.trim();
+    if (trimmed.length < 3) return 'Enter at least 3 characters';
+    if (!RegExp(r'^[a-zA-Z0-9 .,&()-]+$').hasMatch(trimmed)) {
+      return 'Use only letters, numbers, and basic punctuation';
+    }
+    return null;
+  }
+
+  String? _panValidator(String? value) {
+    final required = _required(value);
+    if (required != null) return required;
+    return RegExp(
+      r'^[A-Z]{5}[0-9]{4}[A-Z]$',
+    ).hasMatch(value!.trim().toUpperCase())
+        ? null
+        : 'Enter a valid PAN';
+  }
+
+  String? _tanValidator(String? value) {
+    final required = _required(value);
+    if (required != null) return required;
+    return RegExp(
+      r'^[A-Z]{4}[0-9]{5}[A-Z]$',
+    ).hasMatch(value!.trim().toUpperCase())
+        ? null
+        : 'Enter a valid TAN';
+  }
+
+  String? _addressValidator(String? value) {
+    final required = _required(value);
+    if (required != null) return required;
+    final trimmed = value!.trim();
+    if (trimmed.length < 10) return 'Enter the complete address';
+    if (!RegExp(r'\b\d{6}\b').hasMatch(trimmed)) {
+      return 'Include a 6 digit pincode';
+    }
+    return null;
   }
 
   String? _emailValidator(String? value) {
@@ -917,13 +1045,30 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
     if (required != null) return required;
     return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value!.trim())
         ? null
-        : 'Invalid email';
+        : 'Enter a valid email';
+  }
+
+  String? _mobileValidator(String? value) {
+    final required = _required(value);
+    if (required != null) return required;
+    final digits = value!.replaceAll(RegExp(r'\D'), '');
+    final mobile = digits.length > 10 && digits.startsWith('91')
+        ? digits.substring(digits.length - 10)
+        : digits;
+    if (!RegExp(r'^[6-9][0-9]{9}$').hasMatch(mobile)) {
+      return 'Enter a valid mobile number';
+    }
+    return null;
   }
 
   String? _numberValidator(String? value) {
     final required = _required(value);
     if (required != null) return required;
-    return int.tryParse(value!.trim()) == null ? 'Enter a number' : null;
+    final number = int.tryParse(value!.trim());
+    if (number == null) return 'Enter a valid number';
+    if (number < 0) return 'Enter 0 or more';
+    if (number > 9999) return 'Enter a realistic count';
+    return null;
   }
 
   void _submit() {
@@ -931,20 +1076,26 @@ class _AddVTPDialogState extends State<_AddVTPDialog> {
     widget.onAdd(
       _VTPItem(
         name: _name.text.trim(),
-        code: _code.text.trim(),
+        code: _generateCode(),
         pan: _pan.text.trim().toUpperCase(),
         tan: _tan.text.trim().toUpperCase(),
+        address: _address.text.trim(),
         email: _email.text.trim(),
         mobile: _mobile.text.trim(),
         vtCount: int.tryParse(_vts.text.trim()) ?? 0,
         schoolCount: int.tryParse(_schools.text.trim()) ?? 0,
-        verified: _verified,
+        verified: true,
       ),
     );
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('VTP added successfully.')));
     Navigator.pop(context);
+  }
+
+  String _generateCode() {
+    final timestamp = DateTime.now().millisecondsSinceEpoch % 100000;
+    return 'VTP${timestamp.toString().padLeft(5, '0')}';
   }
 }
 
@@ -989,52 +1140,90 @@ class _Field extends StatelessWidget {
   const _Field({
     required this.label,
     required this.controller,
+    this.hintText,
     this.validator,
     this.keyboardType,
+    this.inputFormatters,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   final String label;
   final TextEditingController controller;
+  final String? hintText;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      validator: validator ?? _required,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Color(0xFF6B7280)),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 12,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: DashboardColors.border,
-            width: 1.5,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: DashboardColors.text,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: DashboardColors.blue, width: 1.7),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          validator: validator ?? _required,
+          keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
+          textCapitalization: textCapitalization,
+          style: const TextStyle(
+            color: DashboardColors.text,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: const TextStyle(
+              color: Color(0xFF7C8797),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 11,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: DashboardColors.border,
+                width: 1.2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: DashboardColors.blue,
+                width: 1.5,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+            ),
+            errorMaxLines: 2,
+          ),
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.3),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.3),
-        ),
-      ),
+      ],
     );
   }
 
   String? _required(String? value) {
-    return value == null || value.trim().isEmpty ? 'Required' : null;
+    return value == null || value.trim().isEmpty
+        ? 'This field is required'
+        : null;
   }
 }

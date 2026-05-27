@@ -271,17 +271,17 @@ class _LoginCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Center(
-                  child: Text(
-                    'Select your role and enter credentials',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _LoginPageState._textMuted,
-                      fontSize: 14,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ),
+                // Center(
+                //   child: Text(
+                //     'Select your role and enter credentials',
+                //     textAlign: TextAlign.center,
+                //     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //       color: _LoginPageState._textMuted,
+                //       fontSize: 14,
+                //       letterSpacing: 0,
+                //     ),
+                //   ),
+                // ),
             const SizedBox(height: 28),
             const _FieldLabel('Email Address *'),
             const SizedBox(height: 10),
@@ -377,34 +377,34 @@ class _LoginCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Center(
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 4,
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: _LoginPageState._textMuted,
-                          fontSize: 14,
-                          letterSpacing: 0,
-                        ),
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        color: _LoginPageState._primaryBlue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Center(
+            //   child: Wrap(
+            //     alignment: WrapAlignment.center,
+            //     spacing: 4,
+            //     children: [
+            //       Text(
+            //         "Don't have an account?",
+            //         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            //               color: _LoginPageState._textMuted,
+            //               fontSize: 14,
+            //               letterSpacing: 0,
+            //             ),
+            //       ),
+            //       GestureDetector(
+            //         onTap: () {},
+            //         child: const Text(
+            //           'Sign Up',
+            //           style: TextStyle(
+            //             color: _LoginPageState._primaryBlue,
+            //             fontSize: 16,
+            //             fontWeight: FontWeight.w800,
+            //             letterSpacing: 0,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
               ],
             ),
           ),

@@ -7,8 +7,8 @@ import 'dashboard_colors.dart';
 import 'floating_quick_actions.dart';
 import 'sidebar.dart';
 
-class ScheduleLecturePage extends StatelessWidget {
-  const ScheduleLecturePage({super.key, this.activeItem = 'Guest Lecture'});
+class IndustrialVisitPage extends StatelessWidget {
+  const IndustrialVisitPage({super.key, this.activeItem = 'Industrial Visit'});
 
   final String activeItem;
 
@@ -52,44 +52,44 @@ class _ScheduleLectureBody extends StatefulWidget {
 class _ScheduleLectureBodyState extends State<_ScheduleLectureBody> {
   final _reportFormKey = GlobalKey<FormState>();
   final _voucherFormKey = GlobalKey<FormState>();
-  final List<_GuestLectureReport> _reports = [];
+  final List<_IndustrialVisitReport> _reports = [];
   bool _showAddReportForm = false;
   bool _showPaymentVoucher = false;
   String? _selectedClass = 'Class 9';
-  String? _selectedScheme = 'SS';
-  String? _selectedVoucherClass = 'Class 9';
   final _schoolName = TextEditingController();
   final _tradeName = TextEditingController();
-  final _jobRole = TextEditingController();
+  final _vtpName = TextEditingController();
   final _vtName = TextEditingController();
-  final _vtMobile = TextEditingController();
-  final _glDate = TextEditingController();
-  final _glLecturerName = TextEditingController();
-  final _glTime = TextEditingController();
-  final _glExperienceYears = TextEditingController();
-  final _glWorkingAddress = TextEditingController();
-  final _glDistanceKm = TextEditingController();
-  final _unitNumber = TextEditingController();
-  final _chapterDescription = TextEditingController();
-  final _glConductedLastMonth = TextEditingController();
-  final _studentsEnrolled = TextEditingController();
-  final _studentsPresentInGl = TextEditingController();
-  final _glFeedback = TextEditingController();
-  final _voucherNo = TextEditingController();
-  final _voucherDate = TextEditingController();
-  final _voucherMonth = TextEditingController();
-  final _voucherGuestFaculty = TextEditingController();
-  final _voucherContactNumber = TextEditingController();
-  final _voucherAmountFigures = TextEditingController();
-  final _voucherAmountWords = TextEditingController();
-  final _voucherSchoolName = TextEditingController();
-  final _voucherStudentCount = TextEditingController();
-  final _voucherVtName = TextEditingController();
-  final _voucherVtMobile = TextEditingController();
-  final _voucherGuestFacultyName = TextEditingController();
-  final _voucherGuestFacultyMobile = TextEditingController();
-  final _voucherPrincipalName = TextEditingController();
-  final _voucherPrincipalMobile = TextEditingController();
+  final _ivDate = TextEditingController();
+  final _studentsAttended = TextEditingController();
+  final _distanceFromPlace = TextEditingController();
+  final _organizationVisited = TextEditingController();
+  final _interactedPerson = TextEditingController();
+  final _topicCovered = TextEditingController();
+  final _studentFeedback = TextEditingController();
+  final _learningOutcomes = TextEditingController();
+  final _ivName = TextEditingController();
+  final _principalName = TextEditingController();
+  final _paymentDate = TextEditingController();
+  final _paymentVoucherNo = TextEditingController();
+  final _paymentRupees = TextEditingController();
+  final _paymentPayTo = TextEditingController();
+  final _paymentRupeesWords = TextEditingController();
+  final _paymentParticulars = TextEditingController();
+  final _paymentSchoolName = TextEditingController();
+  final _preparedSchoolName = TextEditingController();
+  final _trainerName = TextEditingController();
+  final _billNo = TextEditingController();
+  final _billDate = TextEditingController();
+  final _billType = TextEditingController();
+  final _expensesDoneFor = TextEditingController();
+  final _billAmount = TextEditingController();
+  final _totalAmount = TextEditingController();
+  final _paymentVtName = TextEditingController();
+  final _ivPersonAccountNo = TextEditingController();
+  final _ifscCode = TextEditingController();
+  final _bankName = TextEditingController();
+  final _branchName = TextEditingController();
 
   void _toggleReportForm() {
     setState(() {
@@ -98,19 +98,16 @@ class _ScheduleLectureBodyState extends State<_ScheduleLectureBody> {
     });
   }
 
-  void _continueToPaymentVoucher() {
+  void _submitIndustrialVisit() {
     final formState = _reportFormKey.currentState;
     if (formState == null) return;
 
     if (formState.validate()) {
       FocusScope.of(context).unfocus();
-      _voucherSchoolName.text = _schoolName.text;
-      _voucherVtName.text = _vtName.text;
-      _voucherVtMobile.text = _vtMobile.text;
-      _voucherGuestFaculty.text = _glLecturerName.text;
-      _voucherGuestFacultyName.text = _glLecturerName.text;
-      _voucherStudentCount.text = _studentsPresentInGl.text;
-      _selectedVoucherClass = _selectedClass;
+      _paymentSchoolName.text = _schoolName.text;
+      _preparedSchoolName.text = _schoolName.text;
+      _trainerName.text = _vtName.text;
+      _paymentVtName.text = _vtName.text;
       setState(() => _showPaymentVoucher = true);
     }
   }
@@ -124,24 +121,49 @@ class _ScheduleLectureBodyState extends State<_ScheduleLectureBody> {
       setState(() {
         _reports.insert(
           0,
-          _GuestLectureReport(
+          _IndustrialVisitReport(
             schoolName: _schoolName.text.trim(),
             tradeName: _tradeName.text.trim(),
+            vtpName: _vtpName.text.trim(),
+            vtName: _vtName.text.trim(),
             className: _selectedClass ?? '-',
-            scheme: _selectedScheme ?? '-',
-            guestLecturer: _glLecturerName.text.trim(),
-            lectureDate: _glDate.text.trim(),
-            lectureTime: _glTime.text.trim(),
-            studentsPresent: _studentsPresentInGl.text.trim(),
-            voucherNo: _voucherNo.text.trim(),
-            voucherAmount: _voucherAmountFigures.text.trim(),
+            visitDate: _ivDate.text.trim(),
+            studentsAttended: _studentsAttended.text.trim(),
+            distanceFromPlace: _distanceFromPlace.text.trim(),
+            organizationVisited: _organizationVisited.text.trim(),
+            interactedPerson: _interactedPerson.text.trim(),
+            topicCovered: _topicCovered.text.trim(),
+            studentFeedback: _studentFeedback.text.trim(),
+            learningOutcomes: _learningOutcomes.text.trim(),
+            ivName: _ivName.text.trim(),
+            principalName: _principalName.text.trim(),
+            paymentDate: _paymentDate.text.trim(),
+            paymentVoucherNo: _paymentVoucherNo.text.trim(),
+            paymentRupees: _paymentRupees.text.trim(),
+            paymentPayTo: _paymentPayTo.text.trim(),
+            paymentRupeesWords: _paymentRupeesWords.text.trim(),
+            paymentParticulars: _paymentParticulars.text.trim(),
+            paymentSchoolName: _paymentSchoolName.text.trim(),
+            preparedSchoolName: _preparedSchoolName.text.trim(),
+            trainerName: _trainerName.text.trim(),
+            billNo: _billNo.text.trim(),
+            billDate: _billDate.text.trim(),
+            billType: _billType.text.trim(),
+            expensesDoneFor: _expensesDoneFor.text.trim(),
+            billAmount: _billAmount.text.trim(),
+            totalAmount: _totalAmount.text.trim(),
+            paymentVtName: _paymentVtName.text.trim(),
+            ivPersonAccountNo: _ivPersonAccountNo.text.trim(),
+            ifscCode: _ifscCode.text.trim().toUpperCase(),
+            bankName: _bankName.text.trim(),
+            branchName: _branchName.text.trim(),
           ),
         );
-        _showPaymentVoucher = false;
         _showAddReportForm = false;
+        _showPaymentVoucher = false;
       });
       _clearForms();
-      _showTopRightPopup('Complete report submitted');
+      _showTopRightPopup('Industrial visit and payment voucher submitted');
     }
   }
 
@@ -149,43 +171,43 @@ class _ScheduleLectureBodyState extends State<_ScheduleLectureBody> {
     for (final controller in [
       _schoolName,
       _tradeName,
-      _jobRole,
+      _vtpName,
       _vtName,
-      _vtMobile,
-      _glDate,
-      _glLecturerName,
-      _glTime,
-      _glExperienceYears,
-      _glWorkingAddress,
-      _glDistanceKm,
-      _unitNumber,
-      _chapterDescription,
-      _glConductedLastMonth,
-      _studentsEnrolled,
-      _studentsPresentInGl,
-      _glFeedback,
-      _voucherNo,
-      _voucherDate,
-      _voucherMonth,
-      _voucherGuestFaculty,
-      _voucherContactNumber,
-      _voucherAmountFigures,
-      _voucherAmountWords,
-      _voucherSchoolName,
-      _voucherStudentCount,
-      _voucherVtName,
-      _voucherVtMobile,
-      _voucherGuestFacultyName,
-      _voucherGuestFacultyMobile,
-      _voucherPrincipalName,
-      _voucherPrincipalMobile,
+      _ivDate,
+      _studentsAttended,
+      _distanceFromPlace,
+      _organizationVisited,
+      _interactedPerson,
+      _topicCovered,
+      _studentFeedback,
+      _learningOutcomes,
+      _ivName,
+      _principalName,
+      _paymentDate,
+      _paymentVoucherNo,
+      _paymentRupees,
+      _paymentPayTo,
+      _paymentRupeesWords,
+      _paymentParticulars,
+      _paymentSchoolName,
+      _preparedSchoolName,
+      _trainerName,
+      _billNo,
+      _billDate,
+      _billType,
+      _expensesDoneFor,
+      _billAmount,
+      _totalAmount,
+      _paymentVtName,
+      _ivPersonAccountNo,
+      _ifscCode,
+      _bankName,
+      _branchName,
     ]) {
       controller.clear();
     }
 
     _selectedClass = 'Class 9';
-    _selectedScheme = 'SS';
-    _selectedVoucherClass = 'Class 9';
     _reportFormKey.currentState?.reset();
     _voucherFormKey.currentState?.reset();
   }
@@ -306,36 +328,38 @@ class _ScheduleLectureBodyState extends State<_ScheduleLectureBody> {
   void dispose() {
     _schoolName.dispose();
     _tradeName.dispose();
-    _jobRole.dispose();
+    _vtpName.dispose();
     _vtName.dispose();
-    _vtMobile.dispose();
-    _glDate.dispose();
-    _glLecturerName.dispose();
-    _glTime.dispose();
-    _glExperienceYears.dispose();
-    _glWorkingAddress.dispose();
-    _glDistanceKm.dispose();
-    _unitNumber.dispose();
-    _chapterDescription.dispose();
-    _glConductedLastMonth.dispose();
-    _studentsEnrolled.dispose();
-    _studentsPresentInGl.dispose();
-    _glFeedback.dispose();
-    _voucherNo.dispose();
-    _voucherDate.dispose();
-    _voucherMonth.dispose();
-    _voucherGuestFaculty.dispose();
-    _voucherContactNumber.dispose();
-    _voucherAmountFigures.dispose();
-    _voucherAmountWords.dispose();
-    _voucherSchoolName.dispose();
-    _voucherStudentCount.dispose();
-    _voucherVtName.dispose();
-    _voucherVtMobile.dispose();
-    _voucherGuestFacultyName.dispose();
-    _voucherGuestFacultyMobile.dispose();
-    _voucherPrincipalName.dispose();
-    _voucherPrincipalMobile.dispose();
+    _ivDate.dispose();
+    _studentsAttended.dispose();
+    _distanceFromPlace.dispose();
+    _organizationVisited.dispose();
+    _interactedPerson.dispose();
+    _topicCovered.dispose();
+    _studentFeedback.dispose();
+    _learningOutcomes.dispose();
+    _ivName.dispose();
+    _principalName.dispose();
+    _paymentDate.dispose();
+    _paymentVoucherNo.dispose();
+    _paymentRupees.dispose();
+    _paymentPayTo.dispose();
+    _paymentRupeesWords.dispose();
+    _paymentParticulars.dispose();
+    _paymentSchoolName.dispose();
+    _preparedSchoolName.dispose();
+    _trainerName.dispose();
+    _billNo.dispose();
+    _billDate.dispose();
+    _billType.dispose();
+    _expensesDoneFor.dispose();
+    _billAmount.dispose();
+    _totalAmount.dispose();
+    _paymentVtName.dispose();
+    _ivPersonAccountNo.dispose();
+    _ifscCode.dispose();
+    _bankName.dispose();
+    _branchName.dispose();
     super.dispose();
   }
 
@@ -390,58 +414,55 @@ class _ScheduleLectureBodyState extends State<_ScheduleLectureBody> {
                         if (_showPaymentVoucher)
                           _PaymentVoucherForm(
                             formKey: _voucherFormKey,
-                            voucherNo: _voucherNo,
-                            date: _voucherDate,
-                            onDateTap: () => _pickDate(_voucherDate),
-                            month: _voucherMonth,
-                            guestFaculty: _voucherGuestFaculty,
-                            contactNumber: _voucherContactNumber,
-                            amountFigures: _voucherAmountFigures,
-                            amountWords: _voucherAmountWords,
-                            schoolName: _voucherSchoolName,
-                            selectedClass: _selectedVoucherClass,
-                            onClassChanged: (value) =>
-                                setState(() => _selectedVoucherClass = value),
-                            studentCount: _voucherStudentCount,
-                            vtName: _voucherVtName,
-                            vtMobile: _voucherVtMobile,
-                            guestFacultyName: _voucherGuestFacultyName,
-                            guestFacultyMobile: _voucherGuestFacultyMobile,
-                            principalName: _voucherPrincipalName,
-                            principalMobile: _voucherPrincipalMobile,
+                            paymentDate: _paymentDate,
+                            onPaymentDateTap: () => _pickDate(_paymentDate),
+                            voucherNo: _paymentVoucherNo,
+                            rupees: _paymentRupees,
+                            payTo: _paymentPayTo,
+                            rupeesInWords: _paymentRupeesWords,
+                            particulars: _paymentParticulars,
+                            paymentSchoolName: _paymentSchoolName,
+                            preparedSchoolName: _preparedSchoolName,
+                            trainerName: _trainerName,
+                            billNo: _billNo,
+                            billDate: _billDate,
+                            onBillDateTap: () => _pickDate(_billDate),
+                            billType: _billType,
+                            expensesDoneFor: _expensesDoneFor,
+                            billAmount: _billAmount,
+                            totalAmount: _totalAmount,
+                            vtName: _paymentVtName,
+                            accountNo: _ivPersonAccountNo,
+                            ifscCode: _ifscCode,
+                            bankName: _bankName,
+                            branchName: _branchName,
                             onSubmit: _submitPaymentVoucher,
                           )
                         else if (_showAddReportForm)
-                          _GuestLectureReportForm(
+                          _IndustrialVisitReportForm(
                             formKey: _reportFormKey,
                             schoolName: _schoolName,
                             tradeName: _tradeName,
-                            jobRole: _jobRole,
+                            vtpName: _vtpName,
                             vtName: _vtName,
-                            vtMobile: _vtMobile,
-                            glDate: _glDate,
-                            onGlDateTap: () => _pickDate(_glDate),
-                            glLecturerName: _glLecturerName,
-                            glTime: _glTime,
-                            glExperienceYears: _glExperienceYears,
-                            glWorkingAddress: _glWorkingAddress,
-                            glDistanceKm: _glDistanceKm,
-                            unitNumber: _unitNumber,
-                            chapterDescription: _chapterDescription,
-                            glConductedLastMonth: _glConductedLastMonth,
-                            studentsEnrolled: _studentsEnrolled,
-                            studentsPresentInGl: _studentsPresentInGl,
-                            glFeedback: _glFeedback,
+                            ivDate: _ivDate,
+                            onIvDateTap: () => _pickDate(_ivDate),
+                            studentsAttended: _studentsAttended,
+                            distanceFromPlace: _distanceFromPlace,
+                            organizationVisited: _organizationVisited,
+                            interactedPerson: _interactedPerson,
+                            topicCovered: _topicCovered,
+                            studentFeedback: _studentFeedback,
+                            learningOutcomes: _learningOutcomes,
+                            ivName: _ivName,
+                            principalName: _principalName,
                             selectedClass: _selectedClass,
-                            selectedScheme: _selectedScheme,
                             onClassChanged: (value) =>
                                 setState(() => _selectedClass = value),
-                            onSchemeChanged: (value) =>
-                                setState(() => _selectedScheme = value),
-                            onSubmit: _continueToPaymentVoucher,
+                            onSubmit: _submitIndustrialVisit,
                           )
                         else if (_reports.isNotEmpty)
-                          _GuestLectureReportsList(reports: _reports)
+                          _IndustrialVisitReportsList(reports: _reports)
                         else
                           _EmptyLectureState(
                             onTap: () =>
@@ -475,7 +496,7 @@ class _LectureHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Guest Lecture Management',
+          'Industrial Visit Management',
           style: TextStyle(
             color: Color(0xFF0E1730),
             fontSize: 24,
@@ -484,7 +505,7 @@ class _LectureHeader extends StatelessWidget {
         ),
         SizedBox(height: 4),
         Text(
-          'Schedule and manage guest lecture sessions',
+          'Add and manage industrial visit reports',
           style: TextStyle(
             color: Color(0xFF6B7280),
             fontSize: 13,
@@ -534,7 +555,7 @@ class _AddReportButton extends StatelessWidget {
                 const Icon(Icons.add_rounded, color: Colors.white, size: 20),
                 const SizedBox(width: 6),
                 Text(
-                  showCancel ? 'Cancel' : 'Add Guest Lecture',
+                  showCancel ? 'Cancel' : 'Add Industrial Visit',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -550,57 +571,47 @@ class _AddReportButton extends StatelessWidget {
   }
 }
 
-class _GuestLectureReportForm extends StatelessWidget {
-  const _GuestLectureReportForm({
+class _IndustrialVisitReportForm extends StatelessWidget {
+  const _IndustrialVisitReportForm({
     required this.formKey,
     required this.schoolName,
     required this.tradeName,
-    required this.jobRole,
+    required this.vtpName,
     required this.vtName,
-    required this.vtMobile,
-    required this.glDate,
-    required this.glLecturerName,
-    required this.glTime,
-    required this.glExperienceYears,
-    required this.glWorkingAddress,
-    required this.glDistanceKm,
-    required this.unitNumber,
-    required this.chapterDescription,
-    required this.glConductedLastMonth,
-    required this.studentsEnrolled,
-    required this.studentsPresentInGl,
-    required this.glFeedback,
+    required this.ivDate,
+    required this.studentsAttended,
+    required this.distanceFromPlace,
+    required this.organizationVisited,
+    required this.interactedPerson,
+    required this.topicCovered,
+    required this.studentFeedback,
+    required this.learningOutcomes,
+    required this.ivName,
+    required this.principalName,
     required this.selectedClass,
-    required this.selectedScheme,
-    required this.onGlDateTap,
+    required this.onIvDateTap,
     required this.onClassChanged,
-    required this.onSchemeChanged,
     required this.onSubmit,
   });
 
   final GlobalKey<FormState> formKey;
   final TextEditingController schoolName;
   final TextEditingController tradeName;
-  final TextEditingController jobRole;
+  final TextEditingController vtpName;
   final TextEditingController vtName;
-  final TextEditingController vtMobile;
-  final TextEditingController glDate;
-  final TextEditingController glLecturerName;
-  final TextEditingController glTime;
-  final TextEditingController glExperienceYears;
-  final TextEditingController glWorkingAddress;
-  final TextEditingController glDistanceKm;
-  final TextEditingController unitNumber;
-  final TextEditingController chapterDescription;
-  final TextEditingController glConductedLastMonth;
-  final TextEditingController studentsEnrolled;
-  final TextEditingController studentsPresentInGl;
-  final TextEditingController glFeedback;
+  final TextEditingController ivDate;
+  final TextEditingController studentsAttended;
+  final TextEditingController distanceFromPlace;
+  final TextEditingController organizationVisited;
+  final TextEditingController interactedPerson;
+  final TextEditingController topicCovered;
+  final TextEditingController studentFeedback;
+  final TextEditingController learningOutcomes;
+  final TextEditingController ivName;
+  final TextEditingController principalName;
   final String? selectedClass;
-  final String? selectedScheme;
-  final VoidCallback onGlDateTap;
+  final VoidCallback onIvDateTap;
   final ValueChanged<String?> onClassChanged;
-  final ValueChanged<String?> onSchemeChanged;
   final VoidCallback onSubmit;
 
   String? _requiredField(String? value, String label) {
@@ -608,17 +619,8 @@ class _GuestLectureReportForm extends StatelessWidget {
     return null;
   }
 
-  String? _mobileNumber(String? value) {
-    final requiredError = _requiredField(value, 'VT mobile number');
-    if (requiredError != null) return requiredError;
-    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value!.trim())) {
-      return 'Enter a valid 10 digit mobile number';
-    }
-    return null;
-  }
-
   String? _date(String? value) {
-    final requiredError = _requiredField(value, 'Date of conducting GL');
+    final requiredError = _requiredField(value, 'Date');
     if (requiredError != null) return requiredError;
     final match = RegExp(r'^(\d{2})-(\d{2})-(\d{4})$').firstMatch(value!.trim());
     if (match == null) return 'Use dd-mm-yyyy format';
@@ -629,15 +631,6 @@ class _GuestLectureReportForm extends StatelessWidget {
     final parsed = DateTime(year, month, day);
     if (parsed.day != day || parsed.month != month || parsed.year != year) {
       return 'Enter a valid date';
-    }
-    return null;
-  }
-
-  String? _time(String? value) {
-    final requiredError = _requiredField(value, 'Time of GL');
-    if (requiredError != null) return requiredError;
-    if (!RegExp(r'^([01]\d|2[0-3]):[0-5]\d$').hasMatch(value!.trim())) {
-      return 'Use hh:mm format';
     }
     return null;
   }
@@ -656,22 +649,6 @@ class _GuestLectureReportForm extends StatelessWidget {
     final number = int.tryParse(value!.trim());
     if (number == null || number < 0 || (!allowZero && number == 0)) {
       return 'Enter a valid whole number';
-    }
-    return null;
-  }
-
-  String? _studentsPresent(String? value) {
-    final error = _wholeNumber(
-      value,
-      'Students present in GL',
-      allowZero: false,
-    );
-    if (error != null) return error;
-
-    final enrolled = int.tryParse(studentsEnrolled.text.trim());
-    final present = int.tryParse(value!.trim());
-    if (enrolled != null && present != null && present > enrolled) {
-      return 'Present students cannot exceed enrolled students';
     }
     return null;
   }
@@ -699,7 +676,7 @@ class _GuestLectureReportForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Guest Lecture',
+              'Add Industrial Visit',
               style: TextStyle(
                 color: Color(0xFF121A2F),
                 fontSize: 22,
@@ -710,207 +687,141 @@ class _GuestLectureReportForm extends StatelessWidget {
             _TwoColumnRow(
               isMobile: isMobile,
               left: _InputField(
-                label: 'Name of School *',
+                label: 'Name of the School *',
                 controller: schoolName,
                 validator: (value) => _requiredField(value, 'Name of school'),
               ),
               right: _SelectField(
-                label: 'Class *',
+                label: 'Level (Class) *',
                 value: selectedClass,
                 options: const ['Class 9', 'Class 10', 'Class 11', 'Class 12'],
                 onChanged: onClassChanged,
-                validator: (value) => _requiredField(value, 'Class'),
+                validator: (value) => _requiredField(value, 'Level'),
               ),
             ),
           const SizedBox(height: 12),
           _TwoColumnRow(
             isMobile: isMobile,
-            left: _SelectField(
-              label: 'Scheme *',
-              value: selectedScheme,
-              options: const ['SS', 'PM'],
-              onChanged: onSchemeChanged,
-              validator: (value) => _requiredField(value, 'Scheme'),
+            left: _InputField(
+              label: 'Trade *',
+              controller: tradeName,
+              validator: (value) => _requiredField(value, 'Trade'),
             ),
             right: _InputField(
-              label: 'Name of the Trade *',
-              controller: tradeName,
-              validator: (value) => _requiredField(value, 'Name of the trade'),
+              label: 'VTP Name *',
+              controller: vtpName,
+              validator: (value) => _requiredField(value, 'VTP name'),
             ),
           ),
           const SizedBox(height: 12),
           _TwoColumnRow(
             isMobile: isMobile,
             left: _InputField(
-              label: 'Name of Job Role *',
-              controller: jobRole,
-              validator: (value) => _requiredField(value, 'Name of job role'),
-            ),
-            right: _InputField(
               label: 'VT Name *',
               controller: vtName,
               validator: (value) => _requiredField(value, 'VT name'),
             ),
-          ),
-          const SizedBox(height: 12),
-          _TwoColumnRow(
-            isMobile: isMobile,
-            left: _InputField(
-              label: 'VT Mobile Number *',
-              controller: vtMobile,
-              keyboardType: TextInputType.phone,
-              validator: _mobileNumber,
-            ),
-            right: const SizedBox.shrink(),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Guest Lecturer Details',
-            style: TextStyle(
-              color: Color(0xFF121A2F),
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _TwoColumnRow(
-            isMobile: isMobile,
-            left: _InputField(
-              label: 'Date of Conducting GL *',
-              controller: glDate,
+            right: _InputField(
+              label: 'Date *',
+              controller: ivDate,
               hint: 'dd-mm-yyyy',
               keyboardType: TextInputType.datetime,
               readOnly: true,
-              onTap: onGlDateTap,
+              onTap: onIvDateTap,
               suffixIcon: Icons.calendar_today_outlined,
               validator: _date,
             ),
-            right: _InputField(
-              label: 'Name of Guest Lecturer *',
-              controller: glLecturerName,
-              validator: (value) =>
-                  _requiredField(value, 'Name of guest lecturer'),
-            ),
           ),
           const SizedBox(height: 12),
           _TwoColumnRow(
             isMobile: isMobile,
             left: _InputField(
-              label: 'Time of GL *',
-              controller: glTime,
-              hint: 'hh:mm',
-              keyboardType: TextInputType.datetime,
-              validator: _time,
-            ),
-            right: _InputField(
-              label: 'Number of Experience (Years) *',
-              controller: glExperienceYears,
+              label: 'No. of Students Attended *',
+              controller: studentsAttended,
               keyboardType: TextInputType.number,
-              validator: (value) =>
-                  _positiveNumber(value, 'Number of experience'),
-            ),
-          ),
-          const SizedBox(height: 12),
-          _TwoColumnRow(
-            isMobile: isMobile,
-            left: _InputField(
-              label: 'Full Address of Working Place *',
-              controller: glWorkingAddress,
-              maxLines: 3,
-              validator: (value) =>
-                  _requiredField(value, 'Full address of working place'),
+              validator: (value) => _wholeNumber(
+                value,
+                'No. of students attended',
+                allowZero: false,
+              ),
             ),
             right: _InputField(
-              label: 'Distance Between School & Guest Lecturer (KM) *',
-              controller: glDistanceKm,
+              label: 'Distance From the Place (KM) *',
+              controller: distanceFromPlace,
               keyboardType: TextInputType.number,
               validator: (value) => _positiveNumber(value, 'Distance'),
             ),
           ),
-          const SizedBox(height: 20),
-          const Text(
-            'Curriculum Details',
-            style: TextStyle(
-              color: Color(0xFF121A2F),
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
           const SizedBox(height: 12),
           _TwoColumnRow(
             isMobile: isMobile,
             left: _InputField(
-              label: 'Unit Number *',
-              controller: unitNumber,
-              keyboardType: TextInputType.number,
-              validator: (value) => _wholeNumber(
-                value,
-                'Unit number',
-                allowZero: false,
-              ),
-            ),
-            right: _InputField(
-              label: 'Chapter Description *',
-              controller: chapterDescription,
+              label: 'Name & Address of the Organization Visited *',
+              controller: organizationVisited,
               maxLines: 3,
               validator: (value) =>
-                  _requiredField(value, 'Chapter description'),
-            ),
-          ),
-          const SizedBox(height: 12),
-          _TwoColumnRow(
-            isMobile: isMobile,
-            left: _InputField(
-              label: "No. of GL's Conducted Last Month *",
-              controller: glConductedLastMonth,
-              keyboardType: TextInputType.number,
-              validator: (value) =>
-                  _wholeNumber(value, "GL's conducted last month"),
-            ),
-            right: const SizedBox.shrink(),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Student Attendance',
-            style: TextStyle(
-              color: Color(0xFF121A2F),
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _TwoColumnRow(
-            isMobile: isMobile,
-            left: _InputField(
-              label: 'No. of Students Enrolled in Class *',
-              controller: studentsEnrolled,
-              keyboardType: TextInputType.number,
-              validator: (value) => _wholeNumber(
-                value,
-                'Students enrolled in class',
-                allowZero: false,
-              ),
+                  _requiredField(value, 'Name and address of organization'),
             ),
             right: _InputField(
-              label: 'No. of Students Present in GL *',
-              controller: studentsPresentInGl,
-              keyboardType: TextInputType.number,
-              validator: _studentsPresent,
+              label: 'Name, Designation Who Interacted with Students *',
+              controller: interactedPerson,
+              maxLines: 3,
+              validator: (value) =>
+                  _requiredField(value, 'Interacted person details'),
             ),
           ),
           const SizedBox(height: 12),
           _TwoColumnRow(
             isMobile: isMobile,
             left: _InputField(
-              label: 'Feedback of GL',
-              controller: glFeedback,
-              maxLines: 4,
+              label: 'Topic Covered *',
+              controller: topicCovered,
+              maxLines: 3,
+              validator: (value) =>
+                  _requiredField(value, 'Topic covered'),
             ),
-            right: const SizedBox.shrink(),
+            right: _InputField(
+              label: 'Feedback of Students from IV *',
+              controller: studentFeedback,
+              maxLines: 3,
+              validator: (value) =>
+                  _requiredField(value, 'Feedback of students from IV'),
+            ),
+          ),
+          const SizedBox(height: 12),
+          _TwoColumnRow(
+            isMobile: isMobile,
+            left: _InputField(
+              label: 'Learning Outcomes *',
+              controller: learningOutcomes,
+              maxLines: 4,
+              validator: (value) =>
+                  _requiredField(value, 'Learning outcomes'),
+            ),
+            right: _InputField(
+              label: 'Name of the IV *',
+              controller: ivName,
+              validator: (value) => _requiredField(value, 'Name of the IV'),
+            ),
+          ),
+          const SizedBox(height: 12),
+          _TwoColumnRow(
+            isMobile: isMobile,
+            left: _InputField(
+              label: 'Name of the VT *',
+              controller: vtName,
+              validator: (value) => _requiredField(value, 'Name of the VT'),
+            ),
+            right: _InputField(
+              label: 'Name of the Principle *',
+              controller: principalName,
+              validator: (value) =>
+                  _requiredField(value, 'Name of the Principle'),
+            ),
           ),
           const SizedBox(height: 20),
           const Text(
-            'Proofs - GL Photos with GPS',
+            'Proofs - IV Photos with GPS',
             style: TextStyle(
               color: Color(0xFF121A2F),
               fontSize: 20,
@@ -926,8 +837,8 @@ class _GuestLectureReportForm extends StatelessWidget {
               width: isMobile ? double.infinity : null,
               child: ElevatedButton.icon(
                 onPressed: onSubmit,
-                icon: const Icon(Icons.arrow_forward_rounded, size: 18),
-                label: const Text('Continue to Payment Voucher'),
+                icon: const Icon(Icons.check_rounded, size: 18),
+                label: const Text('Submit Industrial Visit'),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: const Color(0xFF2F5FD2),
@@ -957,46 +868,54 @@ class _GuestLectureReportForm extends StatelessWidget {
 class _PaymentVoucherForm extends StatelessWidget {
   const _PaymentVoucherForm({
     required this.formKey,
+    required this.paymentDate,
+    required this.onPaymentDateTap,
     required this.voucherNo,
-    required this.date,
-    required this.onDateTap,
-    required this.month,
-    required this.guestFaculty,
-    required this.contactNumber,
-    required this.amountFigures,
-    required this.amountWords,
-    required this.schoolName,
-    required this.selectedClass,
-    required this.onClassChanged,
-    required this.studentCount,
+    required this.rupees,
+    required this.payTo,
+    required this.rupeesInWords,
+    required this.particulars,
+    required this.paymentSchoolName,
+    required this.preparedSchoolName,
+    required this.trainerName,
+    required this.billNo,
+    required this.billDate,
+    required this.onBillDateTap,
+    required this.billType,
+    required this.expensesDoneFor,
+    required this.billAmount,
+    required this.totalAmount,
     required this.vtName,
-    required this.vtMobile,
-    required this.guestFacultyName,
-    required this.guestFacultyMobile,
-    required this.principalName,
-    required this.principalMobile,
+    required this.accountNo,
+    required this.ifscCode,
+    required this.bankName,
+    required this.branchName,
     required this.onSubmit,
   });
 
   final GlobalKey<FormState> formKey;
+  final TextEditingController paymentDate;
+  final VoidCallback onPaymentDateTap;
   final TextEditingController voucherNo;
-  final TextEditingController date;
-  final VoidCallback onDateTap;
-  final TextEditingController month;
-  final TextEditingController guestFaculty;
-  final TextEditingController contactNumber;
-  final TextEditingController amountFigures;
-  final TextEditingController amountWords;
-  final TextEditingController schoolName;
-  final String? selectedClass;
-  final ValueChanged<String?> onClassChanged;
-  final TextEditingController studentCount;
+  final TextEditingController rupees;
+  final TextEditingController payTo;
+  final TextEditingController rupeesInWords;
+  final TextEditingController particulars;
+  final TextEditingController paymentSchoolName;
+  final TextEditingController preparedSchoolName;
+  final TextEditingController trainerName;
+  final TextEditingController billNo;
+  final TextEditingController billDate;
+  final VoidCallback onBillDateTap;
+  final TextEditingController billType;
+  final TextEditingController expensesDoneFor;
+  final TextEditingController billAmount;
+  final TextEditingController totalAmount;
   final TextEditingController vtName;
-  final TextEditingController vtMobile;
-  final TextEditingController guestFacultyName;
-  final TextEditingController guestFacultyMobile;
-  final TextEditingController principalName;
-  final TextEditingController principalMobile;
+  final TextEditingController accountNo;
+  final TextEditingController ifscCode;
+  final TextEditingController bankName;
+  final TextEditingController branchName;
   final VoidCallback onSubmit;
 
   String? _requiredField(String? value, String label) {
@@ -1020,29 +939,25 @@ class _PaymentVoucherForm extends StatelessWidget {
     return null;
   }
 
-  String? _mobileNumber(String? value) {
-    final requiredError = _requiredField(value, 'Mobile number');
-    if (requiredError != null) return requiredError;
-    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value!.trim())) {
-      return 'Enter a valid 10 digit mobile number';
-    }
-    return null;
-  }
-
-  String? _positiveAmount(String? value) {
-    final requiredError = _requiredField(value, 'Amount paid');
+  String? _positiveAmount(String? value, String label) {
+    final requiredError = _requiredField(value, label);
     if (requiredError != null) return requiredError;
     final amount = num.tryParse(value!.trim());
     if (amount == null || amount <= 0) return 'Enter a valid amount';
     return null;
   }
 
-  String? _studentCount(String? value) {
-    final requiredError = _requiredField(value, 'No. of students');
+  String? _accountNumber(String? value) {
+    final requiredError = _requiredField(value, 'Account no. of IV person');
     if (requiredError != null) return requiredError;
-    final count = int.tryParse(value!.trim());
-    if (count == null || count <= 0) return 'Enter a valid student count';
+    if (!RegExp(r'^\d{9,18}$').hasMatch(value!.trim())) {
+      return 'Enter a valid 9 to 18 digit account number';
+    }
     return null;
+  }
+
+  String? _ifsc(String? value) {
+    return _requiredField(value, 'IFSC code');
   }
 
   @override
@@ -1075,7 +990,7 @@ class _PaymentVoucherForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Payment Voucher',
+              'Payment Vocher of VT',
               style: TextStyle(
                 color: Color(0xFF030B1C),
                 fontSize: 20,
@@ -1086,17 +1001,92 @@ class _PaymentVoucherForm extends StatelessWidget {
             _TwoColumnRow(
               isMobile: isMobile,
               left: _InputField(
-                label: 'Voucher No *',
-                controller: voucherNo,
-                validator: (value) => _requiredField(value, 'Voucher no'),
-              ),
-              right: _InputField(
                 label: 'Date *',
-                controller: date,
+                controller: paymentDate,
                 hint: 'dd-mm-yyyy',
                 keyboardType: TextInputType.datetime,
                 readOnly: true,
-                onTap: onDateTap,
+                onTap: onPaymentDateTap,
+                suffixIcon: Icons.calendar_today_outlined,
+                validator: _date,
+              ),
+              right: _InputField(
+                label: 'Vocher No *',
+                controller: voucherNo,
+                validator: (value) => _requiredField(value, 'Vocher no'),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _TwoColumnRow(
+              isMobile: isMobile,
+              left: _InputField(
+                label: 'Rupees *',
+                controller: rupees,
+                keyboardType: TextInputType.number,
+                validator: (value) => _positiveAmount(value, 'Rupees'),
+              ),
+              right: _InputField(
+                label: 'Pay To *',
+                controller: payTo,
+                validator: (value) => _requiredField(value, 'Pay to'),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _TwoColumnRow(
+              isMobile: isMobile,
+              left: _InputField(
+                label: 'Rupees in Words *',
+                controller: rupeesInWords,
+                validator: (value) =>
+                    _requiredField(value, 'Rupees in words'),
+              ),
+              right: _InputField(
+                label: 'Particulars Who Received the Money *',
+                controller: particulars,
+                maxLines: 3,
+                validator: (value) => _requiredField(
+                  value,
+                  'Particulars who received the money',
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _InputField(
+              label: 'School Name *',
+              controller: paymentSchoolName,
+              validator: (value) => _requiredField(value, 'School name'),
+            ),
+            const _VoucherDivider(),
+            const _VoucherSectionTitle('Prepared by VT'),
+            const SizedBox(height: 12),
+            _TwoColumnRow(
+              isMobile: isMobile,
+              left: _InputField(
+                label: 'School Name *',
+                controller: preparedSchoolName,
+                validator: (value) => _requiredField(value, 'School name'),
+              ),
+              right: _InputField(
+                label: 'Trainer Name *',
+                controller: trainerName,
+                validator: (value) => _requiredField(value, 'Trainer name'),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _TwoColumnRow(
+              isMobile: isMobile,
+              left: _InputField(
+                label: 'Bill No *',
+                controller: billNo,
+                validator: (value) => _requiredField(value, 'Bill no'),
+              ),
+              right: _InputField(
+                label: 'Date *',
+                controller: billDate,
+                hint: 'dd-mm-yyyy',
+                keyboardType: TextInputType.datetime,
+                readOnly: true,
+                onTap: onBillDateTap,
                 suffixIcon: Icons.calendar_today_outlined,
                 validator: _date,
               ),
@@ -1105,70 +1095,33 @@ class _PaymentVoucherForm extends StatelessWidget {
             _TwoColumnRow(
               isMobile: isMobile,
               left: _InputField(
-                label: 'Month *',
-                controller: month,
-                hint: 'e.g., May, 2026',
-                validator: (value) => _requiredField(value, 'Month'),
+                label: 'Bill Type *',
+                controller: billType,
+                validator: (value) => _requiredField(value, 'Bill type'),
               ),
               right: _InputField(
-                label: 'Name of Guest Faculty *',
-                controller: guestFaculty,
+                label: 'Expenses Done For *',
+                controller: expensesDoneFor,
                 validator: (value) =>
-                    _requiredField(value, 'Name of guest faculty'),
+                    _requiredField(value, 'Expenses done for'),
               ),
             ),
             const SizedBox(height: 12),
             _TwoColumnRow(
               isMobile: isMobile,
               left: _InputField(
-                label: 'Contact Number *',
-                controller: contactNumber,
-                keyboardType: TextInputType.phone,
-                validator: _mobileNumber,
+                label: 'Bill Amount *',
+                controller: billAmount,
+                keyboardType: TextInputType.number,
+                validator: (value) => _positiveAmount(value, 'Bill amount'),
               ),
               right: _InputField(
-                label: 'Amount Paid (Figures) *',
-                controller: amountFigures,
+                label: 'Total Amount *',
+                controller: totalAmount,
                 keyboardType: TextInputType.number,
-                validator: _positiveAmount,
+                validator: (value) => _positiveAmount(value, 'Total amount'),
               ),
             ),
-            const SizedBox(height: 12),
-            _InputField(
-              label: 'Amount Paid (Words) *',
-              controller: amountWords,
-              hint: 'e.g., Five Thousand Rupees Only',
-              validator: (value) => _requiredField(value, 'Amount paid words'),
-            ),
-            const SizedBox(height: 12),
-            _TwoColumnRow(
-              isMobile: isMobile,
-              left: _InputField(
-                label: 'Name of School *',
-                controller: schoolName,
-                validator: (value) => _requiredField(value, 'Name of school'),
-              ),
-              right: _SelectField(
-                label: 'Class *',
-                value: selectedClass,
-                options: const ['Class 9', 'Class 10', 'Class 11', 'Class 12'],
-                onChanged: onClassChanged,
-                validator: (value) => _requiredField(value, 'Class'),
-              ),
-            ),
-            const SizedBox(height: 12),
-            _TwoColumnRow(
-              isMobile: isMobile,
-              left: _InputField(
-                label: 'No. of Students *',
-                controller: studentCount,
-                keyboardType: TextInputType.number,
-                validator: _studentCount,
-              ),
-              right: const SizedBox.shrink(),
-            ),
-            const _VoucherDivider(),
-            const _VoucherSectionTitle('Prepared By (VT)'),
             const SizedBox(height: 12),
             _TwoColumnRow(
               isMobile: isMobile,
@@ -1178,46 +1131,35 @@ class _PaymentVoucherForm extends StatelessWidget {
                 validator: (value) => _requiredField(value, 'VT name'),
               ),
               right: _InputField(
-                label: 'VT Mobile *',
-                controller: vtMobile,
-                keyboardType: TextInputType.phone,
-                validator: _mobileNumber,
+                label: 'Account No. of IV Person *',
+                controller: accountNo,
+                keyboardType: TextInputType.number,
+                validator: _accountNumber,
               ),
             ),
-            const _VoucherDivider(),
-            const _VoucherSectionTitle('Received By (Guest Faculty)'),
             const SizedBox(height: 12),
             _TwoColumnRow(
               isMobile: isMobile,
               left: _InputField(
-                label: 'Guest Faculty Name *',
-                controller: guestFacultyName,
-                validator: (value) =>
-                    _requiredField(value, 'Guest faculty name'),
+                label: 'IFSC Code *',
+                controller: ifscCode,
+                validator: _ifsc,
               ),
               right: _InputField(
-                label: 'Guest Faculty Mobile *',
-                controller: guestFacultyMobile,
-                keyboardType: TextInputType.phone,
-                validator: _mobileNumber,
+                label: 'Bank Name *',
+                controller: bankName,
+                validator: (value) => _requiredField(value, 'Bank name'),
               ),
             ),
-            const _VoucherDivider(),
-            const _VoucherSectionTitle('Verified By (Principal)'),
             const SizedBox(height: 12),
             _TwoColumnRow(
               isMobile: isMobile,
               left: _InputField(
-                label: 'Principal Name *',
-                controller: principalName,
-                validator: (value) => _requiredField(value, 'Principal name'),
+                label: 'Branch Name *',
+                controller: branchName,
+                validator: (value) => _requiredField(value, 'Branch name'),
               ),
-              right: _InputField(
-                label: 'Principal Mobile *',
-                controller: principalMobile,
-                keyboardType: TextInputType.phone,
-                validator: _mobileNumber,
-              ),
+              right: const SizedBox.shrink(),
             ),
             const SizedBox(height: 18),
             SizedBox(
@@ -1440,7 +1382,7 @@ class _GlProofsUploadCardState extends State<_GlProofsUploadCard> {
               ),
               SizedBox(height: isMobile ? 8 : 10),
               Text(
-                'Upload GL Photos',
+                'Upload IV Photos',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: const Color(0xFF121A2F),
@@ -1587,6 +1529,17 @@ class _GlProofsUploadCardState extends State<_GlProofsUploadCard> {
   }
 }
 
+class _GpsLocation {
+  const _GpsLocation({required this.latitude, required this.longitude});
+
+  final double latitude;
+  final double longitude;
+
+  String get formatted {
+    return '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}';
+  }
+}
+
 class _GlPhotoProof {
   const _GlPhotoProof({
     required this.name,
@@ -1601,47 +1554,86 @@ class _GlPhotoProof {
   bool get hasGps => gpsLocation != null;
 }
 
-class _GpsLocation {
-  const _GpsLocation({required this.latitude, required this.longitude});
-
-  final double latitude;
-  final double longitude;
-
-  String get formatted {
-    return '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}';
-  }
-}
-
-class _GuestLectureReport {
-  const _GuestLectureReport({
+class _IndustrialVisitReport {
+  const _IndustrialVisitReport({
     required this.schoolName,
     required this.tradeName,
+    required this.vtpName,
+    required this.vtName,
     required this.className,
-    required this.scheme,
-    required this.guestLecturer,
-    required this.lectureDate,
-    required this.lectureTime,
-    required this.studentsPresent,
-    required this.voucherNo,
-    required this.voucherAmount,
+    required this.visitDate,
+    required this.studentsAttended,
+    required this.distanceFromPlace,
+    required this.organizationVisited,
+    required this.interactedPerson,
+    required this.topicCovered,
+    required this.studentFeedback,
+    required this.learningOutcomes,
+    required this.ivName,
+    required this.principalName,
+    required this.paymentDate,
+    required this.paymentVoucherNo,
+    required this.paymentRupees,
+    required this.paymentPayTo,
+    required this.paymentRupeesWords,
+    required this.paymentParticulars,
+    required this.paymentSchoolName,
+    required this.preparedSchoolName,
+    required this.trainerName,
+    required this.billNo,
+    required this.billDate,
+    required this.billType,
+    required this.expensesDoneFor,
+    required this.billAmount,
+    required this.totalAmount,
+    required this.paymentVtName,
+    required this.ivPersonAccountNo,
+    required this.ifscCode,
+    required this.bankName,
+    required this.branchName,
   });
 
   final String schoolName;
   final String tradeName;
+  final String vtpName;
+  final String vtName;
   final String className;
-  final String scheme;
-  final String guestLecturer;
-  final String lectureDate;
-  final String lectureTime;
-  final String studentsPresent;
-  final String voucherNo;
-  final String voucherAmount;
+  final String visitDate;
+  final String studentsAttended;
+  final String distanceFromPlace;
+  final String organizationVisited;
+  final String interactedPerson;
+  final String topicCovered;
+  final String studentFeedback;
+  final String learningOutcomes;
+  final String ivName;
+  final String principalName;
+  final String paymentDate;
+  final String paymentVoucherNo;
+  final String paymentRupees;
+  final String paymentPayTo;
+  final String paymentRupeesWords;
+  final String paymentParticulars;
+  final String paymentSchoolName;
+  final String preparedSchoolName;
+  final String trainerName;
+  final String billNo;
+  final String billDate;
+  final String billType;
+  final String expensesDoneFor;
+  final String billAmount;
+  final String totalAmount;
+  final String paymentVtName;
+  final String ivPersonAccountNo;
+  final String ifscCode;
+  final String bankName;
+  final String branchName;
 }
 
-class _GuestLectureReportsList extends StatelessWidget {
-  const _GuestLectureReportsList({required this.reports});
+class _IndustrialVisitReportsList extends StatelessWidget {
+  const _IndustrialVisitReportsList({required this.reports});
 
-  final List<_GuestLectureReport> reports;
+  final List<_IndustrialVisitReport> reports;
 
   @override
   Widget build(BuildContext context) {
@@ -1649,7 +1641,7 @@ class _GuestLectureReportsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Submitted Guest Lecture Reports',
+          'Submitted Industrial Visit Reports',
           style: TextStyle(
             color: Color(0xFF0E1730),
             fontSize: 18,
@@ -1660,7 +1652,7 @@ class _GuestLectureReportsList extends StatelessWidget {
         ...reports.map(
           (report) => Padding(
             padding: const EdgeInsets.only(bottom: 14),
-            child: _GuestLectureReportCard(report: report),
+            child: _IndustrialVisitReportCard(report: report),
           ),
         ),
       ],
@@ -1668,10 +1660,10 @@ class _GuestLectureReportsList extends StatelessWidget {
   }
 }
 
-class _GuestLectureReportCard extends StatelessWidget {
-  const _GuestLectureReportCard({required this.report});
+class _IndustrialVisitReportCard extends StatelessWidget {
+  const _IndustrialVisitReportCard({required this.report});
 
-  final _GuestLectureReport report;
+  final _IndustrialVisitReport report;
 
   @override
   Widget build(BuildContext context) {
@@ -1705,7 +1697,7 @@ class _GuestLectureReportCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Icon(
-                  Icons.record_voice_over_outlined,
+                  Icons.factory_outlined,
                   color: Color(0xFF2F5FD2),
                 ),
               ),
@@ -1724,7 +1716,7 @@ class _GuestLectureReportCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${report.className} | ${report.scheme} | ${report.tradeName.isEmpty ? '-' : report.tradeName}',
+                      '${report.className} | ${report.tradeName.isEmpty ? '-' : report.tradeName}',
                       style: const TextStyle(
                         color: Color(0xFF667085),
                         fontSize: 12,
@@ -1760,25 +1752,126 @@ class _GuestLectureReportCard extends StatelessWidget {
             runSpacing: 12,
             children: [
               _ReportInfoTile(
-                label: 'Guest Lecturer',
-                value: report.guestLecturer,
+                label: 'IV Name',
+                value: report.ivName,
               ),
-              _ReportInfoTile(label: 'Date', value: report.lectureDate),
-              _ReportInfoTile(label: 'Time', value: report.lectureTime),
+              _ReportInfoTile(label: 'Date', value: report.visitDate),
+              _ReportInfoTile(label: 'VTP Name', value: report.vtpName),
+              _ReportInfoTile(label: 'VT Name', value: report.vtName),
               _ReportInfoTile(
-                label: 'Students Present',
-                value: report.studentsPresent,
+                label: 'Students Attended',
+                value: report.studentsAttended,
               ),
-              _ReportInfoTile(label: 'Voucher No.', value: report.voucherNo),
               _ReportInfoTile(
-                label: 'Amount',
-                value: report.voucherAmount.isEmpty
-                    ? '-'
-                    : 'Rs. ${report.voucherAmount}',
+                label: 'Distance',
+                value: '${report.distanceFromPlace} KM',
+              ),
+              _ReportInfoTile(
+                label: 'Organization',
+                value: report.organizationVisited,
+              ),
+              _ReportInfoTile(
+                label: 'Interacted With',
+                value: report.interactedPerson,
+              ),
+              _ReportInfoTile(label: 'Topic', value: report.topicCovered),
+              _ReportInfoTile(label: 'Feedback', value: report.studentFeedback),
+              _ReportInfoTile(
+                label: 'Learning Outcomes',
+                value: report.learningOutcomes,
+              ),
+              _ReportInfoTile(
+                label: 'Principle',
+                value: report.principalName,
               ),
             ],
           ),
+          const _ReportCardSectionTitle('Payment Vocher of VT'),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _ReportInfoTile(label: 'Date', value: report.paymentDate),
+              _ReportInfoTile(
+                label: 'Vocher No',
+                value: report.paymentVoucherNo,
+              ),
+              _ReportInfoTile(
+                label: 'Rupees',
+                value: 'Rs. ${report.paymentRupees}',
+              ),
+              _ReportInfoTile(label: 'Pay To', value: report.paymentPayTo),
+              _ReportInfoTile(
+                label: 'Rupees in Words',
+                value: report.paymentRupeesWords,
+              ),
+              _ReportInfoTile(
+                label: 'Particulars',
+                value: report.paymentParticulars,
+              ),
+              _ReportInfoTile(
+                label: 'School Name',
+                value: report.paymentSchoolName,
+              ),
+            ],
+          ),
+          const _ReportCardSectionTitle('Prepared by VT'),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _ReportInfoTile(
+                label: 'School Name',
+                value: report.preparedSchoolName,
+              ),
+              _ReportInfoTile(label: 'Trainer Name', value: report.trainerName),
+              _ReportInfoTile(label: 'Bill No', value: report.billNo),
+              _ReportInfoTile(label: 'Date', value: report.billDate),
+              _ReportInfoTile(label: 'Bill Type', value: report.billType),
+              _ReportInfoTile(
+                label: 'Expenses Done For',
+                value: report.expensesDoneFor,
+              ),
+              _ReportInfoTile(
+                label: 'Bill Amount',
+                value: 'Rs. ${report.billAmount}',
+              ),
+              _ReportInfoTile(
+                label: 'Total Amount',
+                value: 'Rs. ${report.totalAmount}',
+              ),
+              _ReportInfoTile(label: 'VT Name', value: report.paymentVtName),
+              _ReportInfoTile(
+                label: 'Account No.',
+                value: report.ivPersonAccountNo,
+              ),
+              _ReportInfoTile(label: 'IFSC Code', value: report.ifscCode),
+              _ReportInfoTile(label: 'Bank Name', value: report.bankName),
+              _ReportInfoTile(label: 'Branch Name', value: report.branchName),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _ReportCardSectionTitle extends StatelessWidget {
+  const _ReportCardSectionTitle(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 12),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Color(0xFF0E1730),
+          fontSize: 15,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }
@@ -2050,7 +2143,7 @@ class _EmptyLectureState extends StatelessWidget {
                   ),
                   SizedBox(height: 14),
                   Text(
-                    "No guest lecture reports yet. Click 'Add Report' to start.",
+                    "No industrial visit reports yet. Click 'Add Industrial Visit' to start.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color(0xFF667085),
