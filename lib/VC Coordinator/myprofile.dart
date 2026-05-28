@@ -194,10 +194,12 @@ class _MyProfileBodyState extends State<_MyProfileBody> {
     if (isBlank('gender')) errors['gender'] = 'Gender is required.';
     if (isBlank('email')) errors['email'] = 'Email Address is required.';
     if (isBlank('phone')) errors['phone'] = 'Phone Number is required.';
-    if (isBlank('organization'))
+    if (isBlank('organization')) {
       errors['organization'] = 'Organization is required.';
-    if (isBlank('designation'))
+    }
+    if (isBlank('designation')) {
       errors['designation'] = 'Designation is required.';
+    }
     if (isBlank('address')) errors['address'] = 'Address is required.';
     if (isBlank('city')) errors['city'] = 'City is required.';
     if (isBlank('state')) errors['state'] = 'State is required.';

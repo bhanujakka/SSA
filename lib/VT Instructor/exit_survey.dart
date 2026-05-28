@@ -1056,7 +1056,7 @@ class _DropdownBox extends StatelessWidget {
         _FieldLabel(label),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           items: values
               .map((item) => DropdownMenuItem(value: item, child: Text(item)))
               .toList(),

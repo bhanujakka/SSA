@@ -781,7 +781,7 @@ class _InternshipField extends StatelessWidget {
         const SizedBox(height: 6),
         if (spec.dropdownOptions != null)
           DropdownButtonFormField<String>(
-            value: spec.dropdownValue,
+            initialValue: spec.dropdownValue,
             items: spec.dropdownOptions!
                 .map(
                   (option) => DropdownMenuItem(
@@ -1027,9 +1027,9 @@ class _TextFieldSpec {
     required String value,
     required List<String> options,
     required ValueChanged<String?> onChanged,
-    this.fullWidth = false,
   })  : key = null,
         hint = null,
+        fullWidth = false,
         type = _InputType.text,
         dropdownOptions = options,
         dropdownValue = value,
@@ -1042,9 +1042,9 @@ class _TextFieldSpec {
     required this.label,
     required String value,
     required VoidCallback onTap,
-    this.fullWidth = false,
   })  : key = null,
         hint = null,
+        fullWidth = false,
         type = _InputType.text,
         dropdownOptions = null,
         dropdownValue = null,

@@ -43,7 +43,7 @@ class _DashboardBody extends StatelessWidget {
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
         final isMobile = maxWidth < 980;
-        final isTablet = maxWidth >= 980 && maxWidth < 1050;
+        final statsColumns = maxWidth >= 980 ? 4 : (maxWidth >= 640 ? 2 : 1);
 
         return Stack(
           children: [
@@ -58,9 +58,7 @@ class _DashboardBody extends StatelessWidget {
                       children: [
                         const _HeroBanner(),
                         const SizedBox(height: 18),
-                        _StatsSection(
-                          columns: isMobile ? 1 : (isTablet ? 2 : 3),
-                        ),
+                        _StatsSection(columns: statsColumns),
                         const SizedBox(height: 18),
                         const _BillingSection(),
                         const SizedBox(height: 18),
@@ -253,28 +251,24 @@ class _StatsSection extends StatelessWidget {
     _StatItem(
       title: 'Total VTPs',
       value: '124',
-      badge: '+6.3%',
       icon: Icons.receipt_long_outlined,
       tileGradient: [Color(0xFF98D2DC), Color(0xFF2D65D7)],
     ),
     _StatItem(
       title: 'Total Students',
       value: '45,892',
-      badge: '+12.1%',
       icon: Icons.school_outlined,
       tileGradient: [Color(0xFF2552C2), Color(0xFF1F43A3)],
     ),
     _StatItem(
       title: 'Total VTs',
       value: '3,456',
-      badge: 'Today: 3,201/3,456',
       icon: Icons.person_add_alt_1_outlined,
       tileGradient: [Color(0xFF2552C2), Color(0xFF2D65D7)],
     ),
     _StatItem(
       title: 'Total VCs',
       value: '892',
-      badge: 'Today: 864/892',
       icon: Icons.manage_search_outlined,
       tileGradient: [Color(0xFF4F86E7), Color(0xFF7398E4)],
     ),
@@ -362,33 +356,6 @@ class _StatCardState extends State<_StatCard> {
                     ),
                   ),
                   child: Icon(widget.item.icon, color: Colors.white, size: 28),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFCEF3D8),
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        child: Text(
-                          '+ ${widget.item.badge}',
-                          style: const TextStyle(
-                            color: Color(0xFF00853A),
-                            fontSize: 14 / 1.2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -1070,14 +1037,12 @@ class _StatItem {
   const _StatItem({
     required this.title,
     required this.value,
-    required this.badge,
     required this.icon,
     required this.tileGradient,
   });
 
   final String title;
   final String value;
-  final String badge;
   final IconData icon;
   final List<Color> tileGradient;
 }

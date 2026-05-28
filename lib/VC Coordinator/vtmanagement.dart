@@ -1120,8 +1120,9 @@ class _AddVTDialogState extends State<_AddVTDialog> {
   String? _panValidator(String? v) {
     if (v == null || v.trim().isEmpty) return 'Required';
     final value = v.trim().toUpperCase();
-    if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(value))
+    if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(value)) {
       return 'Invalid PAN';
+    }
     return null;
   }
 

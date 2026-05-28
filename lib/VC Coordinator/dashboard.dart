@@ -43,7 +43,7 @@ class _DashboardBody extends StatelessWidget {
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
         final isMobile = maxWidth < 980;
-        final isTablet = maxWidth >= 980 && maxWidth < 1050;
+        final statsColumns = maxWidth >= 980 ? 4 : (maxWidth >= 640 ? 2 : 1);
 
         return Stack(
           children: [
@@ -58,9 +58,7 @@ class _DashboardBody extends StatelessWidget {
                       children: [
                         const _HeroBanner(),
                         const SizedBox(height: 18),
-                        _StatsSection(
-                          columns: isMobile ? 1 : (isTablet ? 2 : 3),
-                        ),
+                        _StatsSection(columns: statsColumns),
                         const SizedBox(height: 18),
                         const _BillingSection(),
                         const SizedBox(height: 18),
@@ -80,8 +78,37 @@ class _DashboardBody extends StatelessWidget {
   }
 }
 
-class _HeroBanner extends StatelessWidget {
+class _HeroBanner extends StatefulWidget {
   const _HeroBanner();
+
+  @override
+  State<_HeroBanner> createState() => _HeroBannerState();
+}
+
+class _HeroBannerState extends State<_HeroBanner> {
+  DateTime? _checkInAt;
+  DateTime? _checkOutAt;
+
+  bool get _isCheckedIn => _checkInAt != null && _checkOutAt == null;
+
+  void _checkIn() {
+    setState(() {
+      _checkInAt = DateTime.now();
+      _checkOutAt = null;
+    });
+  }
+
+  void _checkOut() {
+    if (!_isCheckedIn) return;
+    setState(() => _checkOutAt = DateTime.now());
+  }
+
+  String _formatTime(DateTime? dateTime) {
+    if (dateTime == null) return '--:--';
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,6 +181,15 @@ class _HeroBanner extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      _CheckInCard(
+                        isCompact: isCompact,
+                        isCheckedIn: _isCheckedIn,
+                        checkInTime: _formatTime(_checkInAt),
+                        checkOutTime: _formatTime(_checkOutAt),
+                        onCheckIn: _checkIn,
+                        onCheckOut: _checkOut,
+                      ),
+                      const SizedBox(height: 14),
                       Wrap(
                         spacing: 14,
                         runSpacing: 12,
@@ -244,6 +280,169 @@ class _HeroBanner extends StatelessWidget {
   }
 }
 
+class _CheckInCard extends StatelessWidget {
+  const _CheckInCard({
+    required this.isCompact,
+    required this.isCheckedIn,
+    required this.checkInTime,
+    required this.checkOutTime,
+    required this.onCheckIn,
+    required this.onCheckOut,
+  });
+
+  final bool isCompact;
+  final bool isCheckedIn;
+  final String checkInTime;
+  final String checkOutTime;
+  final VoidCallback onCheckIn;
+  final VoidCallback onCheckOut;
+
+  @override
+  Widget build(BuildContext context) {
+    final statusColor =
+        isCheckedIn ? const Color(0xFF16A34A) : const Color(0xFFF97316);
+    final details = Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Icon(
+            isCheckedIn ? Icons.task_alt_rounded : Icons.access_time_rounded,
+            color: statusColor,
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              isCheckedIn ? 'Checked in' : 'Ready to check in',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'In $checkInTime  |  Out $checkOutTime',
+              style: const TextStyle(
+                color: Color(0xE6FFFFFF),
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+    final actions = Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: [
+        _HeroActionButton(
+          label: 'Check In',
+          icon: Icons.login_rounded,
+          onTap: isCheckedIn ? null : onCheckIn,
+          filled: true,
+        ),
+        _HeroActionButton(
+          label: 'Check Out',
+          icon: Icons.logout_rounded,
+          onTap: isCheckedIn ? onCheckOut : null,
+          filled: false,
+        ),
+      ],
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(isCompact ? 14 : 16),
+      decoration: BoxDecoration(
+        color: const Color(0x22FFFFFF),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0x55FFFFFF)),
+      ),
+      child: isCompact
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [details, const SizedBox(height: 12), actions],
+            )
+          : Row(
+              children: [
+                Expanded(child: details),
+                const SizedBox(width: 14),
+                actions,
+              ],
+            ),
+    );
+  }
+}
+
+class _HeroActionButton extends StatelessWidget {
+  const _HeroActionButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    required this.filled,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback? onTap;
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onTap != null;
+    return Opacity(
+      opacity: enabled ? 1 : 0.55,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Container(
+            height: 44,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: filled ? Colors.white : const Color(0x22FFFFFF),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0x66FFFFFF)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: filled ? const Color(0xFF2552C2) : Colors.white,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: filled ? const Color(0xFF2552C2) : Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _StatsSection extends StatelessWidget {
   const _StatsSection({required this.columns});
 
@@ -253,28 +452,24 @@ class _StatsSection extends StatelessWidget {
     _StatItem(
       title: 'Total VTPs',
       value: '124',
-      badge: '+6.3%',
       icon: Icons.receipt_long_outlined,
       tileGradient: [Color(0xFF98D2DC), Color(0xFF2D65D7)],
     ),
     _StatItem(
       title: 'Total Students',
       value: '45,892',
-      badge: '+12.1%',
       icon: Icons.school_outlined,
       tileGradient: [Color(0xFF2552C2), Color(0xFF1F43A3)],
     ),
     _StatItem(
       title: 'Total VTs',
       value: '3,456',
-      badge: 'Today: 3,201/3,456',
       icon: Icons.person_add_alt_1_outlined,
       tileGradient: [Color(0xFF2552C2), Color(0xFF2D65D7)],
     ),
     _StatItem(
       title: 'Total VCs',
       value: '892',
-      badge: 'Today: 864/892',
       icon: Icons.manage_search_outlined,
       tileGradient: [Color(0xFF4F86E7), Color(0xFF7398E4)],
     ),
@@ -362,33 +557,6 @@ class _StatCardState extends State<_StatCard> {
                     ),
                   ),
                   child: Icon(widget.item.icon, color: Colors.white, size: 28),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFCEF3D8),
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        child: Text(
-                          '+ ${widget.item.badge}',
-                          style: const TextStyle(
-                            color: Color(0xFF00853A),
-                            fontSize: 14 / 1.2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -1070,14 +1238,12 @@ class _StatItem {
   const _StatItem({
     required this.title,
     required this.value,
-    required this.badge,
     required this.icon,
     required this.tileGradient,
   });
 
   final String title;
   final String value;
-  final String badge;
   final IconData icon;
   final List<Color> tileGradient;
 }
