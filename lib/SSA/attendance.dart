@@ -4,6 +4,7 @@ import 'appbar.dart';
 import 'dashboard_colors.dart';
 import 'floating_quick_actions.dart';
 import 'sidebar.dart';
+import '../student_attendance_store.dart';
 
 class AttendancePage extends StatelessWidget {
   const AttendancePage({super.key});
@@ -45,29 +46,101 @@ class _AttendanceBody extends StatefulWidget {
 class _AttendanceBodyState extends State<_AttendanceBody> {
   _AttendanceRole _selectedRole = _AttendanceRole.students;
 
-  static const _roleData = {
+  final _roleData =
+      <_AttendanceRole, List<(String, String, String, bool, String, String, String)>>{
     _AttendanceRole.students: [
-      ('Rajesh Kumar', 'STU2024001', 'RK', true),
-      ('Priya Sharma', 'STU2024002', 'PS', true),
-      ('Amit Singh', 'STU2024003', 'AS', false),
-      ('Sneha Patel', 'STU2024004', 'SP', true),
-      ('Rahul Verma', 'STU2024005', 'RV', true),
+      ('Rajesh Kumar', 'STU2024001', 'RK', true, '10:00 AM', '5:00 PM', '-'),
+      ('Priya Sharma', 'STU2024002', 'PS', true, '10:00 AM', '5:00 PM', '-'),
+      ('Amit Singh', 'STU2024003', 'AS', false, '--', '--', 'Absent'),
+      ('Sneha Patel', 'STU2024004', 'SP', true, '10:00 AM', '5:00 PM', '-'),
+      ('Rahul Verma', 'STU2024005', 'RV', true, '10:00 AM', '5:00 PM', '-'),
     ],
     _AttendanceRole.vts: [
-      ('Anita Verma', 'VT2024001', 'AV', true),
-      ('Rohit Das', 'VT2024002', 'RD', true),
-      ('Meena Joshi', 'VT2024003', 'MJ', true),
-      ('Sunil Yadav', 'VT2024004', 'SY', false),
-      ('Nisha Khan', 'VT2024005', 'NK', true),
+      ('Anita Verma', 'VT2024001', 'AV', true, '10:00 AM', '5:00 PM', '-'),
+      ('Rohit Das', 'VT2024002', 'RD', true, '10:00 AM', '5:00 PM', '-'),
+      ('Meena Joshi', 'VT2024003', 'MJ', true, '10:00 AM', '5:00 PM', '-'),
+      ('Sunil Yadav', 'VT2024004', 'SY', false, '--', '--', 'Absent'),
+      ('Nisha Khan', 'VT2024005', 'NK', true, '10:00 AM', '5:00 PM', '-'),
     ],
     _AttendanceRole.vcs: [
-      ('Pooja Nair', 'VC2024001', 'PN', true),
-      ('Karan Gupta', 'VC2024002', 'KG', false),
-      ('Dev Singh', 'VC2024003', 'DS', true),
-      ('Ritu Sinha', 'VC2024004', 'RS', true),
-      ('Aditya Rai', 'VC2024005', 'AR', true),
+      ('Pooja Nair', 'VC2024001', 'PN', true, '10:00 AM', '5:00 PM', '-'),
+      ('Karan Gupta', 'VC2024002', 'KG', false, '--', '--', 'Absent'),
+      ('Dev Singh', 'VC2024003', 'DS', true, '10:00 AM', '5:00 PM', '-'),
+      ('Ritu Sinha', 'VC2024004', 'RS', true, '10:00 AM', '5:00 PM', '-'),
+      ('Aditya Rai', 'VC2024005', 'AR', true, '10:00 AM', '5:00 PM', '-'),
     ],
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSubmittedStudentAttendance();
+    _loadSubmittedVtAttendance();
+    _loadSubmittedVcAttendance();
+  }
+
+  Future<void> _loadSubmittedStudentAttendance() async {
+    final submitted = await StudentAttendanceStore.load();
+    if (!mounted || submitted.isEmpty) return;
+
+    setState(() {
+      _roleData[_AttendanceRole.students] = submitted
+          .map(
+            (record) => (
+              record.name,
+              record.id,
+              record.initials,
+              record.present,
+              record.checkIn,
+              record.checkOut,
+              record.reason,
+            ),
+          )
+          .toList();
+    });
+  }
+
+  Future<void> _loadSubmittedVtAttendance() async {
+    final submitted = await VtAttendanceStore.load();
+    if (!mounted || submitted == null) return;
+
+    setState(() {
+      final current = _roleData[_AttendanceRole.vts]!;
+      _roleData[_AttendanceRole.vts] = [
+        (
+          submitted.name,
+          submitted.id,
+          submitted.initials,
+          submitted.present,
+          submitted.checkIn,
+          submitted.checkOut,
+          submitted.reason,
+        ),
+        ...current.where((row) => row.$2 != submitted.id),
+      ];
+    });
+  }
+
+  Future<void> _loadSubmittedVcAttendance() async {
+    final submitted = await VcAttendanceStore.load();
+    if (!mounted || submitted == null) return;
+
+    setState(() {
+      final current = _roleData[_AttendanceRole.vcs]!;
+      _roleData[_AttendanceRole.vcs] = [
+        (
+          submitted.name,
+          submitted.id,
+          submitted.initials,
+          submitted.present,
+          submitted.checkIn,
+          submitted.checkOut,
+          submitted.reason,
+        ),
+        ...current.where((row) => row.$2 != submitted.id),
+      ];
+    });
+  }
 
   String get _roleLabel {
     switch (_selectedRole) {
@@ -412,10 +485,13 @@ class _AttendanceListCard extends StatelessWidget {
 
   final bool isMobile;
   final String roleLabel;
-  final List<(String, String, String, bool)> rows;
+  final List<(String, String, String, bool, String, String, String)> rows;
 
   @override
   Widget build(BuildContext context) {
+    final showTimeDetails = roleLabel != 'Students';
+    final tableWidth = isMobile ? 900.0 : MediaQuery.of(context).size.width - 360.0;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -444,139 +520,106 @@ class _AttendanceListCard extends StatelessWidget {
           const Divider(height: 1, color: Color(0x33E7B3BE)),
           Padding(
             padding: EdgeInsets.fromLTRB(isMobile ? 14 : 26, 10, isMobile ? 14 : 26, 12),
-            child: Column(
-              children: rows
-                  .map(
-                    (row) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: _AttendanceRow(
-                        name: row.$1,
-                        id: row.$2,
-                        initials: row.$3,
-                        present: row.$4,
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          const Divider(height: 1, color: Color(0x33E7B3BE)),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: _HoverLift(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () {
-                  final total = rows.length;
-                  final presentCount = rows.where((row) => row.$4).length;
-                  final rate = total == 0 ? 0 : ((presentCount / total) * 100).round();
-                  showGeneralDialog<void>(
-                    context: context,
-                    barrierLabel: 'Attendance submitted',
-                    barrierDismissible: true,
-                    barrierColor: Colors.transparent,
-                    transitionDuration: const Duration(milliseconds: 220),
-                    pageBuilder: (dialogContext, _, _) {
-                      Future.delayed(const Duration(seconds: 2), () {
-                        if (Navigator.of(dialogContext).canPop()) {
-                          Navigator.of(dialogContext).pop();
-                        }
-                      });
-
-                      return SafeArea(
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Container(
-                                width: 380,
-                                padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: const Color(0x55E7B3BE), width: 1.2),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x22000000),
-                                      blurRadius: 14,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '$roleLabel attendance submitted successfully.',
-                                      style: const TextStyle(
-                                        color: DashboardColors.text,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      '$presentCount/$total present ($rate%)',
-                                      style: const TextStyle(
-                                        color: DashboardColors.text,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+            child: showTimeDetails
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SizedBox(
+                      width: tableWidth,
+                      child: Column(
+                        children: [
+                          const _AttendanceTableHeader(),
+                          const SizedBox(height: 8),
+                          ...rows.map(
+                            (row) => Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: _AttendanceRow(
+                                name: row.$1,
+                                id: row.$2,
+                                initials: row.$3,
+                                present: row.$4,
+                                checkIn: row.$5,
+                                checkOut: row.$6,
+                                reason: row.$7,
+                                showTimeDetails: showTimeDetails,
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    transitionBuilder: (context, animation, secondaryAnimation, child) {
-                      final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-                      return FadeTransition(
-                        opacity: curved,
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.08, -0.06),
-                            end: Offset.zero,
-                          ).animate(curved),
-                          child: child,
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: const LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [Color(0xFF2552C2), Color(0xFF2D65D7)],
-                    ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Submit Attendance',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17 / 1.2,
-                        fontWeight: FontWeight.w700,
+                        ],
                       ),
                     ),
+                  )
+                : Column(
+                    children: rows
+                        .map(
+                          (row) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _AttendanceRow(
+                              name: row.$1,
+                              id: row.$2,
+                              initials: row.$3,
+                              present: row.$4,
+                              checkIn: row.$5,
+                              checkOut: row.$6,
+                              reason: row.$7,
+                              showTimeDetails: showTimeDetails,
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ),
-                ),
-              ),
-            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AttendanceTableHeader extends StatelessWidget {
+  const _AttendanceTableHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 44,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+
+        color: const Color(0xFFF6F8FC),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: const Row(
+        children: [
+          _HeaderCell(label: 'Name', flex: 3),
+          _HeaderCell(label: 'ID', flex: 2),
+          _HeaderCell(label: 'Checkin', flex: 2),
+          _HeaderCell(label: 'Checkout', flex: 2),
+          _HeaderCell(label: 'Reason', flex: 3),
+          _HeaderCell(label: 'Present/Absent', flex: 2),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeaderCell extends StatelessWidget {
+  const _HeaderCell({required this.label, required this.flex});
+
+  final String label;
+  final int flex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          color: DashboardColors.text,
+          fontSize: 13,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }
@@ -588,16 +631,99 @@ class _AttendanceRow extends StatelessWidget {
     required this.id,
     required this.initials,
     required this.present,
+    required this.checkIn,
+    required this.checkOut,
+    required this.reason,
+    required this.showTimeDetails,
   });
 
   final String name;
   final String id;
   final String initials;
   final bool present;
+  final String checkIn;
+  final String checkOut;
+  final String reason;
+  final bool showTimeDetails;
 
   @override
   Widget build(BuildContext context) {
     final bg = present ? Colors.white : const Color(0xFFFDF7F8);
+
+    if (showTimeDetails) {
+      return _HoverLift(
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: present ? Colors.transparent : const Color(0x77E7B3BE),
+              width: 1.4,
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFF2552C2), Color(0xFF2D65D7)],
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          initials,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18 / 1.2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: DashboardColors.text,
+                          fontSize: 34 / 2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _AttendanceTextCell(text: id, flex: 2),
+              _AttendanceTextCell(text: checkIn, flex: 2),
+              _AttendanceTextCell(text: checkOut, flex: 2),
+              _AttendanceTextCell(text: reason, flex: 3),
+              Expanded(
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: _StatusPill(present: present),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return _HoverLift(
       borderRadius: BorderRadius.circular(16),
       child: Container(
@@ -641,6 +767,8 @@ class _AttendanceRow extends StatelessWidget {
                 children: [
                   Text(
                     name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: DashboardColors.text,
                       fontSize: 34 / 2,
@@ -650,18 +778,60 @@ class _AttendanceRow extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     id,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: DashboardColors.text,
                       fontSize: 14.8,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  if (showTimeDetails) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      'In $checkIn  |  Out $checkOut  |  Reason: $reason',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: DashboardColors.text,
+                        fontSize: 12.8,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
             const SizedBox(width: 10),
             _StatusPill(present: present),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AttendanceTextCell extends StatelessWidget {
+  const _AttendanceTextCell({required this.text, required this.flex});
+
+  final String text;
+  final int flex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 12),
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: DashboardColors.text,
+            fontSize: 14.5,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -802,4 +972,3 @@ class _FloatingPlus extends StatelessWidget {
     return const DashboardQuickActionsFab();
   }
 }
-

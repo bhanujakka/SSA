@@ -64,6 +64,64 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF2552C2),
+          primary: const Color(0xFF2552C2),
+        ),
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.white,
+          contentTextStyle: const TextStyle(
+            color: Color(0xFF475569),
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
+            height: 1.25,
+          ),
+          elevation: 14,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: const BorderSide(color: Color(0xFFE1E7F5)),
+          ),
+          actionTextColor: const Color(0xFF2552C2),
+        ),
+        dialogTheme: DialogThemeData(
+          backgroundColor: Colors.white,
+          elevation: 18,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: const BorderSide(color: Color(0xFFE1E7F5)),
+          ),
+          titleTextStyle: const TextStyle(
+            color: Color(0xFF0F172A),
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+          ),
+          contentTextStyle: const TextStyle(
+            color: Color(0xFF475569),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            height: 1.3,
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFF2552C2),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: const Color(0xFF2552C2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ),
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginPage(),

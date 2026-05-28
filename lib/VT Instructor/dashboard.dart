@@ -5,6 +5,7 @@ import 'appbar.dart';
 import 'dashboard_colors.dart';
 import 'floating_quick_actions.dart';
 import 'sidebar.dart';
+import '../student_attendance_store.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -90,21 +91,73 @@ class _HeroBanner extends StatefulWidget {
 }
 
 class _HeroBannerState extends State<_HeroBanner> {
+  static const _checkInHour = 10;
+  static const _checkOutHour = 17;
+
   DateTime? _checkInAt;
   DateTime? _checkOutAt;
+  String? _lateCheckInReason;
+  String? _earlyCheckOutReason;
 
   bool get _isCheckedIn => _checkInAt != null && _checkOutAt == null;
 
-  void _checkIn() {
+  @override
+  void initState() {
+    super.initState();
+    _loadVtAttendance();
+  }
+
+  Future<void> _loadVtAttendance() async {
+    final record = await VtAttendanceStore.load();
+    if (!mounted || record == null) return;
+
     setState(() {
-      _checkInAt = DateTime.now();
-      _checkOutAt = null;
+      _checkInAt = _parseTodayTime(record.checkIn);
+      _checkOutAt = _parseTodayTime(record.checkOut);
+      _lateCheckInReason = record.reason == '-' ? null : record.reason;
+      _earlyCheckOutReason = null;
     });
   }
 
-  void _checkOut() {
+  Future<void> _checkIn() async {
+    final now = DateTime.now();
+    String? reason;
+    if (_isAfterCheckInTime(now)) {
+      reason = await _requestReason(
+        title: 'Late check-in reason',
+        hint: 'Enter reason for checking in after 10:00 AM',
+      );
+      if (!mounted) return;
+      if (reason == null) return;
+    }
+
+    setState(() {
+      _checkInAt = now;
+      _checkOutAt = null;
+      _lateCheckInReason = reason;
+      _earlyCheckOutReason = null;
+    });
+    await _saveVtAttendance();
+  }
+
+  Future<void> _checkOut() async {
     if (!_isCheckedIn) return;
-    setState(() => _checkOutAt = DateTime.now());
+    final now = DateTime.now();
+    String? reason;
+    if (_isBeforeCheckOutTime(now)) {
+      reason = await _requestReason(
+        title: 'Early check-out reason',
+        hint: 'Enter reason for checking out before 5:00 PM',
+      );
+      if (!mounted) return;
+      if (reason == null) return;
+    }
+
+    setState(() {
+      _checkOutAt = now;
+      _earlyCheckOutReason = reason;
+    });
+    await _saveVtAttendance();
   }
 
   String _formatTime(DateTime? dateTime) {
@@ -112,6 +165,102 @@ class _HeroBannerState extends State<_HeroBanner> {
     final hour = dateTime.hour.toString().padLeft(2, '0');
     final minute = dateTime.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
+  }
+
+  bool _isAfterCheckInTime(DateTime dateTime) =>
+      dateTime.hour > _checkInHour ||
+      (dateTime.hour == _checkInHour && dateTime.minute > 0);
+
+  bool _isBeforeCheckOutTime(DateTime dateTime) =>
+      dateTime.hour < _checkOutHour;
+
+  DateTime? _parseTodayTime(String time) {
+    if (time == '--') return null;
+    final match = RegExp(r'^(\d{1,2}):(\d{2})$').firstMatch(time);
+    if (match == null) return null;
+    final now = DateTime.now();
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(match.group(1)!),
+      int.parse(match.group(2)!),
+    );
+  }
+
+  Future<void> _saveVtAttendance() async {
+    final reason = [
+      if (_lateCheckInReason != null) 'Late check-in: $_lateCheckInReason',
+      if (_earlyCheckOutReason != null) 'Early check-out: $_earlyCheckOutReason',
+    ].join(' | ');
+
+    await VtAttendanceStore.save(
+      VtAttendanceRecord(
+        name: 'VT Instructor',
+        id: 'VT2024001',
+        initials: 'VT',
+        present: _checkInAt != null,
+        checkIn: _formatTime(_checkInAt),
+        checkOut: _formatTime(_checkOutAt),
+        reason: reason.isEmpty ? '-' : reason,
+      ),
+    );
+  }
+
+  Future<String?> _requestReason({
+    required String title,
+    required String hint,
+  }) async {
+    final controller = TextEditingController();
+    String? errorText;
+
+    try {
+      return await showDialog<String>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setDialogState) {
+              return AlertDialog(
+                title: Text(title),
+                content: TextField(
+                  controller: controller,
+                  autofocus: true,
+                  maxLines: 3,
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    errorText: errorText,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final reason = controller.text.trim();
+                      if (reason.isEmpty) {
+                        setDialogState(() {
+                          errorText = 'Reason is required';
+                        });
+                        return;
+                      }
+                      Navigator.pop(context, reason);
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   @override
@@ -193,6 +342,8 @@ class _HeroBannerState extends State<_HeroBanner> {
                         isCheckedIn: _isCheckedIn,
                         checkInTime: _formatTime(_checkInAt),
                         checkOutTime: _formatTime(_checkOutAt),
+                        checkInReason: _lateCheckInReason,
+                        checkOutReason: _earlyCheckOutReason,
                         onCheckIn: _checkIn,
                         onCheckOut: _checkOut,
                       ),
@@ -280,6 +431,8 @@ class _CheckInCard extends StatelessWidget {
     required this.isCheckedIn,
     required this.checkInTime,
     required this.checkOutTime,
+    required this.checkInReason,
+    required this.checkOutReason,
     required this.onCheckIn,
     required this.onCheckOut,
   });
@@ -288,8 +441,10 @@ class _CheckInCard extends StatelessWidget {
   final bool isCheckedIn;
   final String checkInTime;
   final String checkOutTime;
-  final VoidCallback onCheckIn;
-  final VoidCallback onCheckOut;
+  final String? checkInReason;
+  final String? checkOutReason;
+  final Future<void> Function() onCheckIn;
+  final Future<void> Function() onCheckOut;
 
   @override
   Widget build(BuildContext context) {
@@ -333,6 +488,19 @@ class _CheckInCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
+            if (checkInReason != null || checkOutReason != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                checkOutReason ?? checkInReason!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Color(0xD9FFFFFF),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ],
         ),
       ],
@@ -513,7 +681,11 @@ class _StatCardState extends State<_StatCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOut,
-        transform: Matrix4.identity()..translate(0.0, _isHovered ? -6.0 : 0.0),
+        transform: Matrix4.translationValues(
+          0.0,
+          _isHovered ? -6.0 : 0.0,
+          0.0,
+        ),
         padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
         decoration: BoxDecoration(
           color: Colors.white,

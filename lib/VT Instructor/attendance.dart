@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'appbar.dart';
 import 'dashboard_colors.dart';
+import '../dashboard_top_alert.dart';
 import 'floating_quick_actions.dart';
 import 'sidebar.dart';
+import '../student_attendance_store.dart';
 
 class AttendancePage extends StatelessWidget {
   const AttendancePage({super.key});
@@ -43,7 +45,7 @@ class AttendencePage extends AttendancePage {
   const AttendencePage({super.key});
 }
 
-enum _AttendanceRole { students, vts, vcs }
+enum _AttendanceRole { students }
 
 class _AttendanceBody extends StatefulWidget {
   const _AttendanceBody();
@@ -63,26 +65,36 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
       _AttendancePerson('Sneha Patel', 'STU2024004', 'SP', true),
       _AttendancePerson('Rahul Verma', 'STU2024005', 'RV', true),
     ],
-    _AttendanceRole.vts: [
-      _AttendancePerson('John Doe', 'VT2024001', 'JD', true),
-      _AttendancePerson('Anita Verma', 'VT2024002', 'AV', true),
-      _AttendancePerson('Rohit Das', 'VT2024003', 'RD', false),
-    ],
-    _AttendanceRole.vcs: [
-      _AttendancePerson('Pooja Nair', 'VC2024001', 'PN', true),
-      _AttendancePerson('Karan Gupta', 'VC2024002', 'KG', false),
-      _AttendancePerson('Ritu Sinha', 'VC2024003', 'RS', true),
-    ],
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSubmittedStudentAttendance();
+  }
+
+  Future<void> _loadSubmittedStudentAttendance() async {
+    final submitted = await StudentAttendanceStore.load();
+    if (!mounted || submitted.isEmpty) return;
+
+    setState(() {
+      _roleData[_AttendanceRole.students] = submitted
+          .map(
+            (record) => _AttendancePerson(
+              record.name,
+              record.id,
+              record.initials,
+              record.present,
+            ),
+          )
+          .toList();
+    });
+  }
 
   String get _roleLabel {
     switch (_selectedRole) {
       case _AttendanceRole.students:
         return 'Students';
-      case _AttendanceRole.vts:
-        return 'VTs';
-      case _AttendanceRole.vcs:
-        return 'VCs';
     }
   }
 
@@ -164,22 +176,6 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
                                 () => _selectedRole = _AttendanceRole.students,
                               ),
                             ),
-                            _RoleChip(
-                              text: 'VTs',
-                              icon: Icons.person_outline_rounded,
-                              active: _selectedRole == _AttendanceRole.vts,
-                              onTap: () => setState(
-                                () => _selectedRole = _AttendanceRole.vts,
-                              ),
-                            ),
-                            _RoleChip(
-                              text: 'VCs',
-                              icon: Icons.person_search_outlined,
-                              active: _selectedRole == _AttendanceRole.vcs,
-                              onTap: () => setState(
-                                () => _selectedRole = _AttendanceRole.vcs,
-                              ),
-                            ),
                           ],
                         ),
                         const SizedBox(height: 22),
@@ -222,18 +218,32 @@ class _AttendanceBodyState extends State<_AttendanceBody> {
     );
   }
 
-  void _submitAttendance({
+  Future<void> _submitAttendance({
     required String roleLabel,
     required int presentCount,
     required int total,
     required int rate,
-  }) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '$roleLabel attendance submitted: $presentCount/$total present ($rate%).',
-        ),
-      ),
+  }) async {
+    final students = _roleData[_AttendanceRole.students]!
+        .map(
+          (person) => StudentAttendanceRecord(
+            name: person.name,
+            id: person.id,
+            initials: person.initials,
+            present: person.present,
+            checkIn: person.present ? '10:00 AM' : '--',
+            checkOut: person.present ? '5:00 PM' : '--',
+            reason: person.present ? '-' : 'Absent',
+          ),
+        )
+        .toList();
+    await StudentAttendanceStore.save(students);
+    if (!mounted) return;
+
+    showDashboardTopAlert(
+      context,
+      title: '$roleLabel attendance submitted',
+      message: '$presentCount/$total present ($rate%)',
     );
   }
 }
